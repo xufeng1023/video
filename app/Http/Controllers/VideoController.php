@@ -78,7 +78,7 @@ class VideoController extends Controller
         }
 
         $video->save();
-echo 'ddd';
+
         return back();
     }
 
