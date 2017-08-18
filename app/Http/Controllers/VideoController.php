@@ -79,6 +79,14 @@ class VideoController extends Controller
 
         $video->save();
 
+        if($request->hasFile('screenshots')) {
+            foreach($request->screenshots as $shot) {
+                $video->images()->create([
+                    'slug' => $shot->store('upload', 'public')
+                ]);
+            }
+        }
+
         return back();
     }
 

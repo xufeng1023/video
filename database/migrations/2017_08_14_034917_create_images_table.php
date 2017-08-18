@@ -16,7 +16,6 @@ class CreateImagesTable extends Migration
         Schema::create('images', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('video_id');
-            $table->string('title');
             $table->string('slug');
             $table->timestamps();
         });

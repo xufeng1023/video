@@ -29,7 +29,7 @@
                             <div class="col-sm-4">
                                 <div class="form-group">
                                     <label>Thumbnail</label>
-                                    <input type="file" name="thumbnail">
+                                    <input type="file" name="thumbnail" accept="image/*">
                                 </div>
                             </div>
                             <div class="col-sm-4">
@@ -44,6 +44,17 @@
                             <label>Screenshots</label>
                             <input type="file" name="screenshots[]" accept="image/*" multiple>
                         </div>
+                        @foreach($video->images->chunk(4) as $chunk)
+                        <div class="row">
+                            @foreach($chunk as $image)
+                                <div class="col-sm-3">
+                                    <div class="thumbnail">
+                                        <img src="{{ asset('storage/'.$image->slug) }}" width="100%">
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                        @endforeach
                         <hr>
                         <button type="submit" class="btn btn-success">Upload</button>
                     </form>
