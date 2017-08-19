@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use Tests\TestCase;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
@@ -37,14 +38,27 @@ class AdminTest extends TestCase
             ->get('/admin')
             ->assertStatus(200)->assertSee($this->video->title);
     }
-    function test_admin_can_upload_a_video()
+    function test_video_slug_must_be_unique()
     {
         $video = $this->raw('Video');
+        $video['slug'] =  $this->video->slug;
+        $response = $this->login()->post('/admin/videos', $video);
+        $response->assertSessionHasErrors('slug');
+    }
+    function test_admin_can_upload_a_video()
+    {
+        \Storage::fake('public');
+
+        $video = $this->raw('Video');
+        $video['video'] = UploadedFile::fake()->image('video.jpg'); // should be a video
+        $video['thumbnail'] = UploadedFile::fake()->image('thumbnail.jpg');
+        $video['screenshots'][] = UploadedFile::fake()->image('shot1.jpg');
+
         $this->login()->post('/admin/videos', $video);
-        $videoId = \App\Video::latest()->first()->id;
-        $this->create('Image', ['id' => $videoId]);
-        $this->assertDatabaseHas('videos', ['title' => $video['title']]);
-        $this->assertDatabaseHas('images', ['id' => $videoId]);
+
+        $this->assertDatabaseHas('videos', ['link' => 'video/'.$video['video']->hashName()]);
+        $this->assertDatabaseHas('images', ['slug' => 'upload/'.$video['screenshots'][0]->hashName()]);
+        \Storage::disk('public')->assertExists('upload/'.$video['thumbnail']->hashName());
     }
     function test_admin_can_edit_a_video()
     {

@@ -37,7 +37,6 @@ $factory->define(App\Video::class, function (Faker\Generator $faker) {
 $factory->define(App\Image::class, function (Faker\Generator $faker) {
     return [
         'video_id' => factory('App\Video')->create()->id,
-        'title' => $faker->sentence,
         'slug' => $faker->word,
     ];
 });

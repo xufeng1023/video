@@ -19,7 +19,7 @@ class CreateVideosTable extends Migration
             $table->string('slug');
             $table->string('link');
             $table->string('thumbnail');
-            $table->unsignedInteger('views');
+            $table->unsignedInteger('views')->default(0);
             $table->timestamps();
         });
     }

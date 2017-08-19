@@ -53,7 +53,7 @@
 
                                 <ul class="dropdown-menu" role="menu">
                                     @if(auth()->user()->is_admin)
-                                        <li><a href="admin">admin</a></li>
+                                        <li><a href="/admin">admin</a></li>
                                     @endif
                                     <li>
                                         <a href="{{ route('logout') }}"

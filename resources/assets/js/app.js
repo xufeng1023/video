@@ -16,6 +16,7 @@ window.Vue = require('vue');
  */
 
 Vue.component('example', require('./components/Delete.vue'));
+Vue.component('syncTitleSlug', require('./components/SyncTitleSlug.vue'));
 
 const app = new Vue({
     el: '#app'

@@ -14,7 +14,7 @@ class VideoController extends Controller
      */
     public function index()
     {
-        $videos = Video::all();
+        $videos = Video::latest()->get();
         return view('admin.index', compact('videos'));
     }
 
@@ -25,7 +25,7 @@ class VideoController extends Controller
      */
     public function create()
     {
-        //
+        return view('admin.addVideo');
     }
 
     /**
@@ -35,8 +35,31 @@ class VideoController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {
-        Video::create($request->all());
+    {   
+        $this->validate($request, [
+            'title' => 'required',
+            'slug' => 'required|unique:videos',
+            'video' => 'required',
+            'thumbnail' => 'required',
+            'screenshots' => 'required',
+        ]);
+
+        $video = Video::firstOrCreate([
+            'title' => $request->title,
+            'slug' => $request->slug,
+            'link' => $request->video->store('video', 'public'),
+            'thumbnail' => $request->thumbnail->store('upload', 'public'),
+        ]);
+
+        if($request->hasFile('screenshots')) {
+            foreach($request->screenshots as $shot) {
+                $video->images()->create([
+                    'slug' => $shot->store('upload', 'public')
+                ]);
+            }
+        }
+
+        return redirect('/admin');
     }
 
     /**
@@ -70,7 +93,6 @@ class VideoController extends Controller
      */
     public function update(Request $request, Video $video)
     {
-        $video->title = $request->title;
         $video->slug = $request->slug;
 
         if($request->hasFile('thumbnail')) {

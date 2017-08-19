@@ -5,7 +5,7 @@
     <div class="row">
         <div class="col-sm-4">
             <div>
-                <video src="{{ asset('video/test.mp4') }}" width="100%" controls></video>
+                <video src="{{ asset('storage/'.$video->link) }}" width="100%" controls></video>
             </div>
         </div>
         <div class="col-sm-8">
@@ -56,7 +56,7 @@
                         </div>
                         @endforeach
                         <hr>
-                        <button type="submit" class="btn btn-success">Upload</button>
+                        <button type="submit" class="btn btn-success">Update</button>
                     </form>
                 </div>
             </div>

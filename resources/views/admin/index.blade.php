@@ -4,6 +4,9 @@
 <div class="container">
     <div class="row">
         <div class="col-sm-12">
+            <div class="text-right">
+                <a type="button" href="/admin/videos/create" class="btn btn-xs btn-success">+ new</a>
+            </div>
             <div class="table-responsive">
                 <table class="table table-hover">
                     <thead>
