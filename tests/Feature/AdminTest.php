@@ -50,13 +50,11 @@ class AdminTest extends TestCase
         \Storage::fake('public');
 
         $video = $this->raw('Video');
-        $video['video'] = UploadedFile::fake()->image('video.jpg'); // should be a video
         $video['thumbnail'] = UploadedFile::fake()->image('thumbnail.jpg');
         $video['screenshots'][] = UploadedFile::fake()->image('shot1.jpg');
 
         $this->login()->post('/admin/videos', $video);
 
-        $this->assertDatabaseHas('videos', ['link' => 'video/'.$video['video']->hashName()]);
         $this->assertDatabaseHas('images', ['slug' => 'upload/'.$video['screenshots'][0]->hashName()]);
         \Storage::disk('public')->assertExists('upload/'.$video['thumbnail']->hashName());
     }

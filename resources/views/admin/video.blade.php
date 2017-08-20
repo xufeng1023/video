@@ -4,9 +4,12 @@
 <div class="container">
     <div class="row">
         <div class="col-sm-4">
+            <video-input></video-input>
+            @if($video->link)
             <div>
                 <video src="{{ asset('storage/'.$video->link) }}" width="100%" controls></video>
             </div>
+            @endif
         </div>
         <div class="col-sm-8">
             <div class="panel panel-default">

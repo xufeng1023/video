@@ -15,7 +15,7 @@ window.Vue = require('vue');
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
-Vue.component('example', require('./components/Delete.vue'));
+Vue.component('videoInput', require('./components/videoInput.vue'));
 Vue.component('syncTitleSlug', require('./components/SyncTitleSlug.vue'));
 
 const app = new Vue({

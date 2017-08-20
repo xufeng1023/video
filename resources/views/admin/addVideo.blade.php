@@ -9,10 +9,6 @@
                 <div class="panel-body">
                     <form action="/admin/videos" method="POST" enctype="multipart/form-data" autocomplete="off">
                         {{ csrf_field() }}
-                        <div class="form-group">
-                            <label>Video</label>
-                            <input type="file" name="video" accept="video/*">
-                        </div>
                         <sync-title-slug title="{{ old('title') }}" slug="{{ old('slug') }}"></sync-title-slug>
                         <div class="form-group">
                             <label>Thumbnail</label>

@@ -894,7 +894,7 @@ window.Vue = __webpack_require__(36);
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
-Vue.component('example', __webpack_require__(37));
+Vue.component('videoInput', __webpack_require__(37));
 Vue.component('syncTitleSlug', __webpack_require__(40));
 
 var app = new Vue({
@@ -41898,9 +41898,9 @@ var Component = __webpack_require__(8)(
   /* moduleIdentifier (server only) */
   null
 )
-Component.options.__file = "C:\\Users\\xu feng\\Desktop\\video\\resources\\assets\\js\\components\\Delete.vue"
+Component.options.__file = "C:\\Users\\xu feng\\Desktop\\video\\resources\\assets\\js\\components\\videoInput.vue"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key.substr(0, 2) !== "__"})) {console.error("named exports are not supported in *.vue files.")}
-if (Component.options.functional) {console.error("[vue-loader] Delete.vue: functional components are not supported with templates, they should use render functions.")}
+if (Component.options.functional) {console.error("[vue-loader] videoInput.vue: functional components are not supported with templates, they should use render functions.")}
 
 /* hot reload */
 if (false) {(function () {
@@ -41909,9 +41909,9 @@ if (false) {(function () {
   if (!hotAPI.compatible) return
   module.hot.accept()
   if (!module.hot.data) {
-    hotAPI.createRecord("data-v-c47fcde4", Component.options)
+    hotAPI.createRecord("data-v-7785bfd2", Component.options)
   } else {
-    hotAPI.reload("data-v-c47fcde4", Component.options)
+    hotAPI.reload("data-v-7785bfd2", Component.options)
   }
   module.hot.dispose(function (data) {
     disposed = true
@@ -41935,17 +41935,56 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-    props: ['action'],
-    methods: {
-        onSubmit: function onSubmit() {
-            if (confirm('delete?')) {
-                console.log(2);
-            }
-        }
-    }
+	data: function data() {
+		return {
+			progress: 0
+		};
+	},
+
+	methods: {
+		onChange: function onChange(e) {
+			var loaded = 0;
+			var start = 0;
+			var step = 10000 * 1024; // 5m
+			var end = start + step;
+
+			var file = e.target.files[0];
+			var size = file.size;
+
+			if (end > size) end = size;
+
+			var blob = file.slice(start, end);
+
+			var reader = new FileReader();
+			//reader.readAsBinaryString(blob)
+			reader.readAsDataURL(blob);
+
+			// var fm = new FormData
+			// fm.append('video', blob)
+			// fm.append('aa', 123)
+
+			var self = this;
+
+			reader.onload = function () {
+
+				axios.post('/admin/videos/video', { 'video': reader.result }).then(function () {
+					loaded += end - start;
+					self.progress = loaded / size * 100 + '%';
+
+					start += step;
+					if (start >= size) return;
+
+					end = start + step;
+					if (end > size) end = size;
+
+					blob = file.slice(start, end);
+					reader.readAsDataURL(blob);
+				});
+			};
+		}
+	}
 });
 
 /***/ }),
@@ -41953,37 +41992,24 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('form', {
-    staticClass: "pull-right",
+  return _c('div', {
+    staticClass: "form-group"
+  }, [_c('label', [_vm._v("Video")]), _vm._v(" "), _c('input', {
     attrs: {
-      "action": _vm.action,
-      "method": "POST"
+      "type": "file",
+      "name": "video",
+      "accept": "video/*"
     },
     on: {
-      "submit": _vm.onSubmit
+      "change": _vm.onChange
     }
-  }, [_c('input', {
-    attrs: {
-      "type": "hidden",
-      "name": "_method",
-      "value": "DELETE"
-    }
-  }), _vm._v(" "), _vm._m(0)])
-},staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('button', {
-    staticClass: "btn btn-xs btn-danger",
-    attrs: {
-      "type": "submit"
-    }
-  }, [_c('span', {
-    staticClass: "glyphicon glyphicon-trash"
-  })])
-}]}
+  }), _vm._v(" "), _c('p', [_vm._v(_vm._s(_vm.progress))])])
+},staticRenderFns: []}
 module.exports.render._withStripped = true
 if (false) {
   module.hot.accept()
   if (module.hot.data) {
-     require("vue-hot-reload-api").rerender("data-v-c47fcde4", module.exports)
+     require("vue-hot-reload-api").rerender("data-v-7785bfd2", module.exports)
   }
 }
 

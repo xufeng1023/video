@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Video;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class VideoController extends Controller
 {
@@ -39,7 +40,6 @@ class VideoController extends Controller
         $this->validate($request, [
             'title' => 'required',
             'slug' => 'required|unique:videos',
-            'video' => 'required',
             'thumbnail' => 'required',
             'screenshots' => 'required',
         ]);
@@ -47,7 +47,6 @@ class VideoController extends Controller
         $video = Video::firstOrCreate([
             'title' => $request->title,
             'slug' => $request->slug,
-            'link' => $request->video->store('video', 'public'),
             'thumbnail' => $request->thumbnail->store('upload', 'public'),
         ]);
 
@@ -60,6 +59,19 @@ class VideoController extends Controller
         }
 
         return redirect('/admin');
+    }
+
+    /**
+     * Store a video to an existing row.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function uploadVideo(Request $request)
+    {   
+        //$request->video->storeAs('upload', 'j.jpg', 'public');
+        Storage::append('public/video/ma.mp4', file_get_contents($request->video));
+        
     }
 
     /**
