@@ -17,14 +17,14 @@
 			onChange(e) {
 				var loaded = 0
 				var start = 0
-				let step = 10000 * 1024 // 5m
+				let step = 5 * 1024 * 1024 // 1m
 				var end = start + step
 
 				let file = e.target.files[0]
 				let size = file.size
 
 				if(end > size) end = size
-
+					
 				var blob = file.slice(start, end)
 
 				let reader = new FileReader()
@@ -40,18 +40,21 @@
 				reader.onload = function() {
 
 					axios.post('/admin/videos/video', {'video': reader.result})
-					.then( () => {
+					.then( () => { console.log(start, end, size)
 						loaded += end - start
 						self.progress = ((loaded / size) * 100) + '%'
 
 						start += step
-						if(start >= size) return
+						if(start >= size || end >= size) return
 
 						end = start + step
 						if(end > size) end = size
 
-	                    blob = file.slice(start, end);
-	                    reader.readAsDataURL(blob);
+						
+							blob = file.slice(start, end);
+                    		reader.readAsDataURL(blob);
+						
+	                    
             		})              
 
         		};

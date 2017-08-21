@@ -41947,7 +41947,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 		onChange: function onChange(e) {
 			var loaded = 0;
 			var start = 0;
-			var step = 10000 * 1024; // 5m
+			var step = 5 * 1024 * 1024; // 1m
 			var end = start + step;
 
 			var file = e.target.files[0];
@@ -41970,11 +41970,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 			reader.onload = function () {
 
 				axios.post('/admin/videos/video', { 'video': reader.result }).then(function () {
+					console.log(start, end, size);
 					loaded += end - start;
 					self.progress = loaded / size * 100 + '%';
 
 					start += step;
-					if (start >= size) return;
+					if (start >= size || end >= size) return;
 
 					end = start + step;
 					if (end > size) end = size;

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Video;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Filesystem\FilesystemAdapter;
 
 class VideoController extends Controller
 {
@@ -69,9 +70,7 @@ class VideoController extends Controller
      */
     public function uploadVideo(Request $request)
     {   
-        //$request->video->storeAs('upload', 'j.jpg', 'public');
-        Storage::append('public/video/ma.mp4', file_get_contents($request->video));
-        
+        Storage::append('public/video/ma.mp4', file_get_contents($request->video), '');
     }
 
     /**
