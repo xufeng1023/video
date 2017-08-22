@@ -7,7 +7,12 @@
             <div class="form-group">
                 <form action="/admin/posts" method="POST">
                     {{ csrf_field() }}
-                    <post-title-input></post-title-input>
+                    <div class="input-group">
+                        <post-title-input></post-title-input>
+                        <span class="input-group-btn">
+                            <button type="submit" class="btn btn-success">add</button>
+                        </span>
+                    </div>
                 </form>
             </div>
             <div class="table-responsive">

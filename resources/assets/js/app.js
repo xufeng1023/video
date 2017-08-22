@@ -17,6 +17,7 @@ window.Vue = require('vue');
 
 Vue.component('videoInput', require('./components/videoInput.vue'));
 Vue.component('postTitleInput', require('./components/PostTitleInput.vue'));
+Vue.component('updatePostForm', require('./components/UpdatePostForm.vue'));
 
 const app = new Vue({
     el: '#app'

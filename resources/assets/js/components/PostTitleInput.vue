@@ -1,17 +1,13 @@
 <template>
-	<div class="input-group">
-        <input type="text" name="title" class="form-control" v-model="computedTitle">
-        <span class="input-group-btn">
-            <button type="submit" class="btn btn-success">add</button>
-        </span>
-    </div>
+    <input type="text" name="title" class="form-control" v-model="computedTitle">
 </template>
 
 <script>
 	export default {
+		props: ['title'],
 		data() {
 			return {
-				'titleValue': ''
+				'titleValue': this.title
 			}
 		},
 		computed: {

@@ -50,6 +50,14 @@ class AdminTest extends TestCase
         $this->assertDatabaseMissing('posts', $post->toArray());
     }
 
+    function test_admin_can_update_a_post()
+    {
+        $post = $this->create('Post')->toArray();
+        $post['title'] = 'New Title '.$post['title'];
+        $this->login()->put('/admin/posts/'.$post['id'], $post);
+        $this->assertDatabaseHas('posts', $post);
+    }
+
     // function test_video_slug_must_be_unique()
     // {
     //     $slug = 'hello';
