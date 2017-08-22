@@ -895,7 +895,7 @@ window.Vue = __webpack_require__(36);
  */
 
 Vue.component('videoInput', __webpack_require__(37));
-Vue.component('syncTitleSlug', __webpack_require__(40));
+Vue.component('postTitleInput', __webpack_require__(53));
 
 var app = new Vue({
   el: '#app'
@@ -41937,6 +41937,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 
 /* harmony default export */ __webpack_exports__["default"] = ({
+	props: ['id'],
 	data: function data() {
 		return {
 			progress: 0
@@ -41947,7 +41948,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 		onChange: function onChange(e) {
 			var loaded = 0;
 			var start = 0;
-			var step = 5 * 1024 * 1024; // 1m
+			var step = 1 * 1024 * 1024; // 1m
 			var end = start + step;
 
 			var file = e.target.files[0];
@@ -41958,24 +41959,19 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 			var blob = file.slice(start, end);
 
 			var reader = new FileReader();
-			//reader.readAsBinaryString(blob)
 			reader.readAsDataURL(blob);
-
-			// var fm = new FormData
-			// fm.append('video', blob)
-			// fm.append('aa', 123)
 
 			var self = this;
 
 			reader.onload = function () {
-
-				axios.post('/admin/videos/video', { 'video': reader.result }).then(function () {
-					console.log(start, end, size);
+				axios.post('/admin/videos/uploadVideo/' + self.id, { 'video': reader.result }).then(function () {
 					loaded += end - start;
 					self.progress = loaded / size * 100 + '%';
 
 					start += step;
-					if (start >= size || end >= size) return;
+					if (start >= size || end >= size) {
+						location.reload();
+					}
 
 					end = start + step;
 					if (end > size) end = size;
@@ -42015,15 +42011,33 @@ if (false) {
 }
 
 /***/ }),
-/* 40 */
+/* 40 */,
+/* 41 */,
+/* 42 */,
+/* 43 */
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 44 */,
+/* 45 */,
+/* 46 */,
+/* 47 */,
+/* 48 */,
+/* 49 */,
+/* 50 */,
+/* 51 */,
+/* 52 */,
+/* 53 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 var Component = __webpack_require__(8)(
   /* script */
-  __webpack_require__(41),
+  __webpack_require__(54),
   /* template */
-  __webpack_require__(42),
+  __webpack_require__(55),
   /* styles */
   null,
   /* scopeId */
@@ -42031,9 +42045,9 @@ var Component = __webpack_require__(8)(
   /* moduleIdentifier (server only) */
   null
 )
-Component.options.__file = "C:\\Users\\xu feng\\Desktop\\video\\resources\\assets\\js\\components\\SyncTitleSlug.vue"
+Component.options.__file = "C:\\Users\\xu feng\\Desktop\\video\\resources\\assets\\js\\components\\PostTitleInput.vue"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key.substr(0, 2) !== "__"})) {console.error("named exports are not supported in *.vue files.")}
-if (Component.options.functional) {console.error("[vue-loader] SyncTitleSlug.vue: functional components are not supported with templates, they should use render functions.")}
+if (Component.options.functional) {console.error("[vue-loader] PostTitleInput.vue: functional components are not supported with templates, they should use render functions.")}
 
 /* hot reload */
 if (false) {(function () {
@@ -42042,9 +42056,9 @@ if (false) {(function () {
   if (!hotAPI.compatible) return
   module.hot.accept()
   if (!module.hot.data) {
-    hotAPI.createRecord("data-v-65c51eb5", Component.options)
+    hotAPI.createRecord("data-v-562635f5", Component.options)
   } else {
-    hotAPI.reload("data-v-65c51eb5", Component.options)
+    hotAPI.reload("data-v-562635f5", Component.options)
   }
   module.hot.dispose(function (data) {
     disposed = true
@@ -42055,7 +42069,7 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 41 */
+/* 54 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -42069,31 +42083,20 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-//
-//
-//
-//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-	props: ['title', 'slug'],
 	data: function data() {
 		return {
-			'titleValue': this.title,
-			'titleSlug': this.slug
+			'titleValue': ''
 		};
 	},
 
 	computed: {
-		computedSlug: function computedSlug() {
-			return this.titleValue.toLowerCase().replace(/\s+/g, '-');
-		},
-
 		computedTitle: {
 			get: function get() {
 				return this.titleValue;
 			},
 			set: function set(v) {
-				this.titleSlug = '';
 				var capitalized = v.replace(/\s+/g, ' ').split(' ').map(function (value) {
 					if (value) {
 						return value[0].toUpperCase() + value.slice(1);
@@ -42107,13 +42110,13 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 });
 
 /***/ }),
-/* 42 */
+/* 55 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('div', [_c('div', {
-    staticClass: "form-group"
-  }, [_c('label', [_vm._v("Title")]), _vm._v(" "), _c('input', {
+  return _c('div', {
+    staticClass: "input-group"
+  }, [_c('input', {
     directives: [{
       name: "model",
       rawName: "v-model",
@@ -42134,32 +42137,24 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
         _vm.computedTitle = $event.target.value
       }
     }
-  })]), _vm._v(" "), _c('div', {
-    staticClass: "form-group"
-  }, [_c('label', [_vm._v("Slug")]), _vm._v(" "), _c('input', {
-    staticClass: "form-control",
+  }), _vm._v(" "), _vm._m(0)])
+},staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('span', {
+    staticClass: "input-group-btn"
+  }, [_c('button', {
+    staticClass: "btn btn-success",
     attrs: {
-      "type": "text",
-      "name": "slug"
-    },
-    domProps: {
-      "value": _vm.titleSlug || _vm.computedSlug
+      "type": "submit"
     }
-  })])])
-},staticRenderFns: []}
+  }, [_vm._v("add")])])
+}]}
 module.exports.render._withStripped = true
 if (false) {
   module.hot.accept()
   if (module.hot.data) {
-     require("vue-hot-reload-api").rerender("data-v-65c51eb5", module.exports)
+     require("vue-hot-reload-api").rerender("data-v-562635f5", module.exports)
   }
 }
-
-/***/ }),
-/* 43 */
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
 
 /***/ })
 /******/ ]);

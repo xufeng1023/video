@@ -8,6 +8,7 @@
 
 <script>
 	export default {
+		props: ['id'],
 		data() {
 			return {
 				progress: 0
@@ -17,7 +18,7 @@
 			onChange(e) {
 				var loaded = 0
 				var start = 0
-				let step = 5 * 1024 * 1024 // 1m
+				let step = 1 * 1024 * 1024 // 1m
 				var end = start + step
 
 				let file = e.target.files[0]
@@ -28,33 +29,27 @@
 				var blob = file.slice(start, end)
 
 				let reader = new FileReader()
-				//reader.readAsBinaryString(blob)
 				reader.readAsDataURL(blob)
-
-				// var fm = new FormData
-				// fm.append('video', blob)
-				// fm.append('aa', 123)
 
 				let self = this
 
 				reader.onload = function() {
-
-					axios.post('/admin/videos/video', {'video': reader.result})
-					.then( () => { console.log(start, end, size)
+					axios.post('/admin/videos/uploadVideo/'+self.id, {'video': reader.result})
+					.then( () => { 
 						loaded += end - start
 						self.progress = ((loaded / size) * 100) + '%'
 
 						start += step
-						if(start >= size || end >= size) return
+						if(start >= size || end >= size) {
+							location.reload()
+						}
 
 						end = start + step
 						if(end > size) end = size
 
-						
-							blob = file.slice(start, end);
-                    		reader.readAsDataURL(blob);
-						
-	                    
+						blob = file.slice(start, end);
+                		reader.readAsDataURL(blob);
+
             		})              
 
         		};

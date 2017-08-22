@@ -16,7 +16,7 @@ window.Vue = require('vue');
  */
 
 Vue.component('videoInput', require('./components/videoInput.vue'));
-Vue.component('syncTitleSlug', require('./components/SyncTitleSlug.vue'));
+Vue.component('postTitleInput', require('./components/PostTitleInput.vue'));
 
 const app = new Vue({
     el: '#app'

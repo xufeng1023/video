@@ -1,32 +1,28 @@
-@extends('layouts.app')
+@extends('layouts.admin')
 
 @section('content')
-<div class="container"><?php //phpinfo(); ?>
+<div class="container">
     <div class="row">
         <div class="col-sm-4">
-            <video-input></video-input>
-            @if($video->link)
-            <div>
-                <video src="{{ asset('storage/'.$video->link) }}" width="100%" controls></video>
-            </div>
-            @endif
+            <video-input id="{{ $post->id }}"></video-input>
+
         </div>
         <div class="col-sm-8">
             <div class="panel panel-default">
                 <div class="panel-body">
-                    <form action="/admin/videos/{{ $video->id }}" method="POST" enctype="multipart/form-data">
+                    <form action="/admin/videos/{{ $post->id }}" method="POST" enctype="multipart/form-data">
                         {{ csrf_field() }}
                         <input type="hidden" name="_method" value="PUT">
                         <div class="form-group">
                             <label>Title</label>
-                            <input type="text" name="title" class="form-control" value="{{ $video->title }}">
+                            <input type="text" name="title" class="form-control" value="{{ $post->title }}">
                         </div>
                         <div class="form-group">
                             <label>Slug</label>
-                            <input type="text" name="slug" class="form-control" value="{{ $video->slug }}">
+                            <input type="text" name="slug" class="form-control" value="{{ $post->title }}">
                         </div>
                         <div class="form-group">
-                            <label>Views: <span class="badge">{{ $video->views }}</span></label>
+                            <label>Views: <span class="badge">{{ $post->views }}</span></label>
                         </div>
                         <div class="row">
                             <div class="col-sm-4">
@@ -38,7 +34,7 @@
                             <div class="col-sm-4">
                                 <div class="form-group">
                                     <div class="thumbnail">
-                                        <img src="{{ asset('storage/'.$video->thumbnail) }}" width="100%">
+                                        <img src="" width="100%">
                                     </div>                            
                                 </div>
                             </div>
@@ -47,12 +43,12 @@
                             <label>Screenshots</label>
                             <input type="file" name="screenshots[]" accept="image/*" multiple>
                         </div>
-                        @foreach($video->images->chunk(4) as $chunk)
+                        @foreach($post->images->chunk(4) as $chunk)
                         <div class="row">
                             @foreach($chunk as $image)
                                 <div class="col-sm-3">
                                     <div class="thumbnail">
-                                        <img src="{{ asset('storage/'.$image->slug) }}" width="100%">
+                                        <img src="" width="100%">
                                     </div>
                                 </div>
                             @endforeach

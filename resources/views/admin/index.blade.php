@@ -1,29 +1,30 @@
-@extends('layouts.app')
+@extends('layouts.admin')
 
 @section('content')
 <div class="container">
     <div class="row">
         <div class="col-sm-12">
-            <div class="text-right">
-                <a type="button" href="/admin/videos/create" class="btn btn-xs btn-success">+ new</a>
+            <div class="form-group">
+                <form action="/admin/posts" method="POST">
+                    {{ csrf_field() }}
+                    <post-title-input></post-title-input>
+                </form>
             </div>
             <div class="table-responsive">
                 <table class="table table-hover">
                     <thead>
-                        <tr><th>Title</th><th>Slug</th><th>Link</th><th>Views</th><th></th></tr>
+                        <tr><th>Title</th><th>Views</th><th></th></tr>
                     </thead>
                     <tbody>                  
-                        @foreach($videos as $video)
+                        @foreach($posts as $post)
                             <tr>
-                                <td>{{ $video->title }}</td>
-                                <td>{{ $video->slug }}</td>
-                                <td>{{ $video->link }}</td>
-                                <td>{{ $video->views }}</td>
+                                <td>{{ $post->title }}</td>
+                                <td>{{ $post->views }}</td>
                                 <td>
-                                    <a href="admin/videos/{{ $video->id }}" type="button" class="btn btn-xs btn-default">
+                                    <a href="admin/posts/{{ $post->id }}/edit" type="button" class="btn btn-xs btn-default">
                                         <span class="glyphicon glyphicon-edit"></span>
                                     </a>
-                                    <form action="admin/videos/{{ $video->id }}" method="POST" class="pull-right">
+                                    <form action="admin/posts/{{ $post->id }}" method="POST" class="pull-right">
                                         {{ csrf_field() }}
                                         <input type="hidden" name="_method" value="DELETE">
                                         <button type="submit" class="btn btn-xs btn-danger">

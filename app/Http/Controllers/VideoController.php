@@ -3,9 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Video;
+use Illuminate\Http\File;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Filesystem\FilesystemAdapter;
 
 class VideoController extends Controller
 {
@@ -39,9 +40,8 @@ class VideoController extends Controller
     public function store(Request $request)
     {   
         $this->validate($request, [
-            'title' => 'required',
             'slug' => 'required|unique:videos',
-            'thumbnail' => 'required',
+            'thumbnail' => 'required|image',
             'screenshots' => 'required',
         ]);
 
@@ -49,6 +49,7 @@ class VideoController extends Controller
             'title' => $request->title,
             'slug' => $request->slug,
             'thumbnail' => $request->thumbnail->store('upload', 'public'),
+            'link' => 'video/'.Str::random(40).'.mp4'
         ]);
 
         if($request->hasFile('screenshots')) {
@@ -68,9 +69,9 @@ class VideoController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function uploadVideo(Request $request)
+    public function uploadVideo(Video $video, Request $request)
     {   
-        Storage::append('public/video/ma.mp4', file_get_contents($request->video), '');
+        Storage::append('public/'.$video->link, file_get_contents($request->video), '');
     }
 
     /**
@@ -131,6 +132,11 @@ class VideoController extends Controller
      */
     public function destroy(Video $video)
     {
+        Storage::delete('public/'.$video->link);
+        Storage::delete('public/'.$video->thumbnail);
+        foreach($video->images as $image) {
+            Storage::delete('public/'.$image->slug);
+        }
         $video->delete();
         return redirect('/admin');
     }

@@ -5,8 +5,9 @@ Route::get('/', function () {
 });
 
 Route::prefix('admin')->middleware(['auth','admin'])->group(function() {
-	Route::get('/', 'VideoController@index');
-	Route::post('videos/video', 'VideoController@uploadVideo');
+	Route::get('/', 'PostController@index');
+	Route::post('videos/uploadVideo/{video}', 'VideoController@uploadVideo');
+	Route::resource('posts', 'PostController');
 	Route::resource('videos', 'VideoController');
 });
 
