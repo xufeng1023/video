@@ -12,7 +12,8 @@
                 <div class="panel-body">
                     <update-post-form data="{{ $post }}"></update-post-form>
                     <hr>
-                    <div class="form-group">
+                    <post-image-input :id="{{ $post->id }}"></post-image-input>
+                    <!-- <div class="form-group">
                         <label>Images</label>
                         <input type="file" name="screenshots[]" accept="image/*" multiple>
                     </div>
@@ -26,7 +27,7 @@
                             </div>
                         @endforeach
                     </div>
-                    @endforeach
+                    @endforeach -->
                 </div>
             </div>
         </div>

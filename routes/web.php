@@ -9,6 +9,7 @@ Route::prefix('admin')->middleware(['auth','admin'])->group(function() {
 	Route::post('videos/uploadVideo/{video}', 'VideoController@uploadVideo');
 	Route::resource('posts', 'PostController');
 	Route::resource('videos', 'VideoController');
+	Route::resource('images', 'ImageController');
 });
 
 Auth::routes();

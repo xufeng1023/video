@@ -47,6 +47,7 @@
             </div>
         </nav>
         @yield('content')
+        <flash></flash>
     </div>
     <script src="{{ asset('js/app.js') }}"></script>
 </body>

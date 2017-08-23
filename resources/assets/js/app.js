@@ -9,14 +9,17 @@ require('./bootstrap');
 
 window.Vue = require('vue');
 
+window.Bus = new Vue();
+
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
-
+Vue.component('flash', require('./components/Flash.vue'));
 Vue.component('videoInput', require('./components/videoInput.vue'));
 Vue.component('postTitleInput', require('./components/PostTitleInput.vue'));
+Vue.component('postImageInput', require('./components/PostImageInput.vue'));
 Vue.component('updatePostForm', require('./components/UpdatePostForm.vue'));
 
 const app = new Vue({

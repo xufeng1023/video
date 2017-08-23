@@ -35,7 +35,23 @@ class ImageController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->validate($request, [
+            'post_id' => 'required|exists:posts,id',
+            'images' => 'required|array'
+        ]);
+
+        foreach($request->images as $image) {
+            Image::create([
+                'post_id' => $request->post_id,
+                'slug' => $slugs[] = $image->store('upload', 'public')
+            ]);
+        }
+
+        // if(!empty($slugs)) {
+        //     return ['slugs' => $slugs, 'message' => 'Uploaded '.count($slugs).' images!'];
+        // }
+        
+        return response('Failed', 500);
     }
 
     /**

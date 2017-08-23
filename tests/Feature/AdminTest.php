@@ -58,6 +58,20 @@ class AdminTest extends TestCase
         $this->assertDatabaseHas('posts', $post);
     }
 
+    function test_admin_can_upload_images_to_a_post()
+    {
+        \Storage::fake('public');
+
+        $post = $this->create('Post');
+        $image = UploadedFile::fake()->image('image.jpg');
+        $data = [
+            'post_id' => $post->id,
+            'images' => [$image]
+        ];
+        
+        $this->login()->post('/admin/images', $data);
+        $this->assertDatabaseHas('images', ['post_id' => $post->id, 'slug' => 'upload/'.$image->hashName()]);
+    }
     // function test_video_slug_must_be_unique()
     // {
     //     $slug = 'hello';

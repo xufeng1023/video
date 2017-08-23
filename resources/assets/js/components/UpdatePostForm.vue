@@ -31,7 +31,17 @@
 			onSubmit(e) {
 				let data = new FormData(e.target)
 				axios.post('/admin/posts/'+this.post.id, data)
-					.then(() => alert('good'))
+					.then((r) => {
+						Bus.$emit('flash', {
+							message: r.data.message,
+							type: 'success'
+						})
+					}, (r) => {
+						Bus.$emit('flash', {
+							message: 'Failed!',
+							type: 'danger'
+						})
+					})
 			}
 		}
 	}
