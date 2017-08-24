@@ -4,11 +4,12 @@
 <div class="container">
     <div class="row">
         <div class="col-sm-12">
+            @include('error')
             <div class="form-group">
                 <form action="/admin/posts" method="POST">
                     {{ csrf_field() }}
                     <div class="input-group">
-                        <post-title-input></post-title-input>
+                        <post-title-input title="{{ old('title') }}"></post-title-input>
                         <span class="input-group-btn">
                             <button type="submit" class="btn btn-success">add</button>
                         </span>
@@ -23,12 +24,12 @@
                     <tbody>                  
                         @foreach($posts as $post)
                             <tr>
-                                <td>{{ $post->title }}</td>
+                                <td>
+                                    <a href="admin/posts/{{ $post->id }}/edit">{{ $post->title }}
+                                    </a>
+                                </td>
                                 <td>{{ $post->views }}</td>
                                 <td>
-                                    <a href="admin/posts/{{ $post->id }}/edit" type="button" class="btn btn-xs btn-default">
-                                        <span class="glyphicon glyphicon-edit"></span>
-                                    </a>
                                     <form action="admin/posts/{{ $post->id }}" method="POST" class="pull-right">
                                         {{ csrf_field() }}
                                         <input type="hidden" name="_method" value="DELETE">

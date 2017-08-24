@@ -72,43 +72,11 @@ class AdminTest extends TestCase
         $this->login()->post('/admin/images', $data);
         $this->assertDatabaseHas('images', ['post_id' => $post->id, 'slug' => 'upload/'.$image->hashName()]);
     }
-    // function test_video_slug_must_be_unique()
-    // {
-    //     $slug = 'hello';
-    //     $video1 = $this->raw('Video', ['slug' => $slug]);
-    //     $video2 = $this->raw('Video', ['slug' => $slug]);
-    //     $this->login()->post('/admin/videos', $video1);
-    //     $response = $this->login()->post('/admin/videos', $video2);
-    //     $response->assertSessionHasErrors('slug');
-    // }
-    // function test_admin_can_upload_a_video()
-    // {
-    //     \Storage::fake('public');
 
-    //     $video = $this->raw('Video');
-    //     $video['thumbnail'] = UploadedFile::fake()->image('thumbnail.jpg');
-    //     $video['screenshots'][] = UploadedFile::fake()->image('shot1.jpg');
-
-    //     $this->login()->post('/admin/videos', $video);
-
-    //     $this->assertDatabaseHas('images', ['slug' => 'upload/'.$video['screenshots'][0]->hashName()]);
-    //     \Storage::disk('public')->assertExists('upload/'.$video['thumbnail']->hashName());
-    // }
-    // function test_admin_can_edit_a_video()
-    // {
-    //     $slug = 'new slug';
-    //     $this->login()->put('/admin/videos/'.$this->video->id, ['slug' => $slug]);
-    //     $this->assertDatabaseHas('videos', ['id' => $this->video->id, 'slug' => $slug]);
-    // }
-    // function test_admin_can_view_a_video()
-    // {
-    //     $this->login()->get('/admin/videos/'.$this->video->id)
-    //         ->assertSee($this->video->title);
-    // }
-    // function test_admin_can_delete_a_video()
-    // {
-    //     $this->login()
-    //         ->delete('/admin/videos/'.$this->video->id);
-    //     $this->assertDatabaseMissing('videos', ['id' => $this->video->id]);
-    // }
+    function test_admin_can_delete_an_image_of_a_post()
+    {
+        $image = $this->create('Image');
+        $this->login()->delete('/admin/images/'.$image->id);
+        $this->assertDatabaseMissing('images', $image->toArray());
+    }
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Image;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class ImageController extends Controller
 {
@@ -40,18 +41,18 @@ class ImageController extends Controller
             'images' => 'required|array'
         ]);
 
-        foreach($request->images as $image) {
-            Image::create([
+        foreach($request->images as $key => $image) {
+            $slugs[$key]['slug'] = $image->store('upload', 'public');
+            $pic = Image::create([
                 'post_id' => $request->post_id,
-                'slug' => $slugs[] = $image->store('upload', 'public')
+                'slug' => $slugs[$key]['slug'] 
             ]);
+            $slugs[$key]['id'] = $pic->id;
         }
 
-        // if(!empty($slugs)) {
-        //     return ['slugs' => $slugs, 'message' => 'Uploaded '.count($slugs).' images!'];
-        // }
-        
-        return response('Failed', 500);
+        if(!empty($slugs)) {
+            return ['slugs' => $slugs, 'message' => 'Uploaded '.count($slugs).' images!'];
+        }
     }
 
     /**
@@ -96,6 +97,12 @@ class ImageController extends Controller
      */
     public function destroy(Image $image)
     {
-        //
+        $image->delete();
+
+        if(Storage::disk('public')->exists($image->slug)) {
+            Storage::delete('public/'.$image->slug);
+        }
+        
+        return ['message' => 'Deleted!'];
     }
 }

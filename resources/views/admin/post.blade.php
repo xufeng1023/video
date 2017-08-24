@@ -12,7 +12,11 @@
                 <div class="panel-body">
                     <update-post-form data="{{ $post }}"></update-post-form>
                     <hr>
-                    <post-image-input :id="{{ $post->id }}"></post-image-input>
+                    <post-image-input 
+                        src="{{ asset('storage/') }}" 
+                        id="{{ $post->id }}"
+                        image="{{ $post->images }}"
+                    ></post-image-input>
                     <!-- <div class="form-group">
                         <label>Images</label>
                         <input type="file" name="screenshots[]" accept="image/*" multiple>
