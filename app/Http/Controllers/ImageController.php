@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Image;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 
 class ImageController extends Controller
 {
@@ -48,6 +47,7 @@ class ImageController extends Controller
                 'slug' => $slugs[$key]['slug'] 
             ]);
             $slugs[$key]['id'] = $pic->id;
+            $slugs[$key]['is_thumbnail'] = $pic->is_thumbnail;
         }
 
         if(!empty($slugs)) {
@@ -86,7 +86,9 @@ class ImageController extends Controller
      */
     public function update(Request $request, Image $image)
     {
-        //
+        $image->removeAllThumbnails()->newThumbnail();
+
+        return ['message' => 'Thumbnail changed!'];
     }
 
     /**
@@ -97,12 +99,8 @@ class ImageController extends Controller
      */
     public function destroy(Image $image)
     {
-        $image->delete();
-
-        if(Storage::disk('public')->exists($image->slug)) {
-            Storage::delete('public/'.$image->slug);
-        }
+        $image->deleteFiles()->delete();
         
-        return ['message' => 'Deleted!'];
+        return ['message' => 'Image Deleted!'];
     }
 }

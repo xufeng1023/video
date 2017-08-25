@@ -2,6 +2,8 @@
 
 namespace Tests;
 
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 
 abstract class TestCase extends BaseTestCase
@@ -28,6 +30,22 @@ abstract class TestCase extends BaseTestCase
     protected function raw($model, $attr = [])
     {
     	return factory("App\\$model")->raw($attr);
+    }
+
+    protected function file($name = 'image.jpg')
+    {
+        Storage::fake('public');
+        return UploadedFile::fake()->image($name);
+    }
+
+    protected function fileExist($slug, $folder = 'upload')
+    {
+        return Storage::disk('public')->assertExists($folder.'/'.$slug);
+    }
+
+    protected function fileMissing($slug, $folder = 'upload')
+    {
+        return Storage::disk('public')->assertMissing($folder.'/'.$slug);
     }
 
     protected function admin()

@@ -3,7 +3,7 @@
 namespace Tests\Feature;
 
 use Tests\TestCase;
-use Illuminate\Http\UploadedFile;
+
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
@@ -11,11 +11,6 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 class AdminTest extends TestCase
 {
     use DatabaseMigrations;
-
-    function setUp()
-    {
-        parent::setUp();
-    }
 
     function test_guests_can_not_access_admin_directory()
     {
@@ -45,9 +40,13 @@ class AdminTest extends TestCase
 
     function test_admin_can_delete_a_post()
     {
+        $file = $this->file();
         $post = $this->create('Post');
-        $this->login()->delete('/admin/posts/'.$post->id);
+        $this->login()->post('/admin/images', ['post_id' => $post->id, 'images' => [$file]]);
+        $this->delete('/admin/posts/'.$post->id);
         $this->assertDatabaseMissing('posts', $post->toArray());
+        $this->assertDatabaseMissing('images', ['slug' => 'upload/'.$file->hashName()]);
+        $this->fileMissing($file->hashName());
     }
 
     function test_admin_can_update_a_post()
@@ -60,10 +59,8 @@ class AdminTest extends TestCase
 
     function test_admin_can_upload_images_to_a_post()
     {
-        \Storage::fake('public');
-
         $post = $this->create('Post');
-        $image = UploadedFile::fake()->image('image.jpg');
+        $image = $this->file();
         $data = [
             'post_id' => $post->id,
             'images' => [$image]
@@ -71,12 +68,29 @@ class AdminTest extends TestCase
         
         $this->login()->post('/admin/images', $data);
         $this->assertDatabaseHas('images', ['post_id' => $post->id, 'slug' => 'upload/'.$image->hashName()]);
+        $this->fileExist($image->hashName());
     }
 
     function test_admin_can_delete_an_image_of_a_post()
     {
+        $image = $this->file();
+
+        $data = [
+            'post_id' => $this->create('Post')->id,
+            'images' => [$image]
+        ];
+        
+        $response = $this->login()->post('/admin/images', $data);
+        $insertedImage = $response->original['slugs'][0]; // 'slugs' is a json returned from that controller method
+        $this->delete('/admin/images/'.$insertedImage['id']);
+        $this->assertDatabaseMissing('images', $insertedImage);
+        $this->fileMissing($image->hashName());
+    }
+
+    function test_admin_can_set_an_image_as_thumbnail()
+    {
         $image = $this->create('Image');
-        $this->login()->delete('/admin/images/'.$image->id);
-        $this->assertDatabaseMissing('images', $image->toArray());
+        $this->login()->put('/admin/images/'.$image->id);
+        $this->assertDatabaseHas('images', ['id' => $image->id, 'is_thumbnail' => 1]);
     }
 }

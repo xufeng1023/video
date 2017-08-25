@@ -6,9 +6,9 @@
 	    </div>
 	    <div class="row" v-for="pic in computedImages">
             <div class="col-sm-4" v-for="slug in pic">
-                <div class="thumbnail">
+                <div class="thumbnail" :class="{'is-thumbnail':slug.is_thumbnail}">
                     <img :src="slug.slug | SRC(src)" width="100%">
-                    <button type="button" class="btn btn-success btn-xs">
+                    <button type="button" class="btn btn-success btn-xs" @click="thumb(slug.id)">
                     	<span class="glyphicon glyphicon-thumbs-up"></span>
                     </button>
                     <button type="button" class="btn btn-danger btn-xs" @click="remove(slug.id)">
@@ -62,6 +62,20 @@
 						Bus.$emit('flash', {
 							message: r.response.data,
 							type: 'danger'
+						})
+					})
+			},
+			thumb(id) {
+				axios.post('/admin/images/'+id, {_method: 'PUT'})
+					.then(r => {
+						this.images.forEach(image => {
+							image.is_thumbnail = 0
+							if(image.id == id) image.is_thumbnail = 1
+						})
+
+						Bus.$emit('flash', {
+							message: r.data.message,
+							type: 'success'
 						})
 					})
 			},
