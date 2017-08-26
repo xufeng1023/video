@@ -6,10 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class Video extends Model
 {
-    protected $guarded = [];
+    protected $fillable = ['post_id', 'slug', 'thumbnail', 'link'];
 
-    function images()
-    {
-    	return $this->hasMany('App\Image');
-    }
 }

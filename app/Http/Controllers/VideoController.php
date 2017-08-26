@@ -17,8 +17,7 @@ class VideoController extends Controller
      */
     public function index()
     {
-        $videos = Video::latest()->get();
-        return view('admin.index', compact('videos'));
+
     }
 
     /**
@@ -28,7 +27,7 @@ class VideoController extends Controller
      */
     public function create()
     {
-        return view('admin.addVideo');
+
     }
 
     /**
@@ -38,40 +37,15 @@ class VideoController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {   
-        $this->validate($request, [
-            'slug' => 'required|unique:videos',
-            'thumbnail' => 'required|image',
-            'screenshots' => 'required',
-        ]);
-
-        $video = Video::firstOrCreate([
-            'title' => $request->title,
+    {
+        $path = $request->video->store('video', 'public');
+        $video = Video::create([
+            'post_id' => $request->postId,
             'slug' => $request->slug,
-            'thumbnail' => $request->thumbnail->store('upload', 'public'),
-            'link' => 'video/'.Str::random(40).'.mp4'
+            'link' => $path,
+            'thumbnail' => ''
         ]);
-
-        if($request->hasFile('screenshots')) {
-            foreach($request->screenshots as $shot) {
-                $video->images()->create([
-                    'slug' => $shot->store('upload', 'public')
-                ]);
-            }
-        }
-
-        return redirect('/admin');
-    }
-
-    /**
-     * Store a video to an existing row.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function uploadVideo(Video $video, Request $request)
-    {   
-        Storage::append('public/'.$video->link, file_get_contents($request->video), '');
+        return ['videoId' => $video->id];
     }
 
     /**
@@ -82,7 +56,7 @@ class VideoController extends Controller
      */
     public function show(Video $video)
     {
-        return view('admin.video', compact('video'));
+
     }
 
     /**
@@ -104,24 +78,14 @@ class VideoController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Video $video)
-    {
-        $video->slug = $request->slug;
-
-        if($request->hasFile('thumbnail')) {
-            $video->thumbnail = $request->thumbnail->store('upload', 'public');
-        }
-
-        $video->save();
-
-        if($request->hasFile('screenshots')) {
-            foreach($request->screenshots as $shot) {
-                $video->images()->create([
-                    'slug' => $shot->store('upload', 'public')
-                ]);
-            }
-        }
-
-        return back();
+    {   
+        //ini_set('memory_limit', '200M');
+        //Storage::append('public/'.$video->link, file_get_contents($request->video), '');
+        echo (int) $_SERVER['CONTENT_LENGTH']."\n";
+        echo memory_get_usage(true)."\n";
+        echo memory_get_usage(false)."\n";
+        echo memory_get_peak_usage(true)."\n";
+        echo memory_get_peak_usage(false)."\n";
     }
 
     /**
@@ -132,12 +96,6 @@ class VideoController extends Controller
      */
     public function destroy(Video $video)
     {
-        Storage::delete('public/'.$video->link);
-        Storage::delete('public/'.$video->thumbnail);
-        foreach($video->images as $image) {
-            Storage::delete('public/'.$image->slug);
-        }
-        $video->delete();
-        return redirect('/admin');
+
     }
 }

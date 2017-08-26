@@ -54,7 +54,7 @@ class AdminTest extends TestCase
         $post = $this->create('Post')->toArray();
         $post['title'] = 'New Title '.$post['title'];
         $this->login()->put('/admin/posts/'.$post['id'], $post);
-        $this->assertDatabaseHas('posts', $post);
+        $this->assertDatabaseHas('posts', ['title' => $post['title']]);
     }
 
     function test_admin_can_upload_images_to_a_post()
@@ -92,5 +92,17 @@ class AdminTest extends TestCase
         $image = $this->create('Image');
         $this->login()->put('/admin/images/'.$image->id);
         $this->assertDatabaseHas('images', ['id' => $image->id, 'is_thumbnail' => 1]);
+    }
+
+    function test_admin_can_upload_a_video()
+    {
+        $post = $this->create('Post');
+        $file = $this->file();
+        $this->login()->post('/admin/videos', [
+            'postId' => $post->id,
+            'slug' => $post->title,
+            'video' => $file
+        ]);
+        $this->assertDatabaseHas('videos', ['post_id' => $post->id, 'link' => 'video/'.$file->hashName()]);
     }
 }

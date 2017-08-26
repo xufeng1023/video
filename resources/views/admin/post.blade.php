@@ -14,7 +14,7 @@
                         image="{{ $post->images }}"
                     ></post-image-input>
                     <hr>
-                    <video-input id="{{ $post->id }}"></video-input>
+                    <video-input slug="{{ $post->videoSlug() }}" post-id="{{ $post->id }}"></video-input>
                 </div>
             </div>
         </div>

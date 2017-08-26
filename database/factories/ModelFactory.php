@@ -22,6 +22,7 @@ $factory->define(App\Video::class, function (Faker\Generator $faker) {
     return [
         'post_id' => factory('App\Post')->create()->id,
         'slug' => $faker->word,
+        'thumbnail' => $faker->sentence,
         'link' => $faker->sentence,
     ];
 });

@@ -8,51 +8,90 @@
 
 <script>
 	export default {
-		props: ['id'],
+		props: ['postId', 'slug'],
 		data() {
 			return {
-				progress: 0
+				videoId: '',
+				progress: 0,
+				ajax: '/admin/videos'
 			}
 		},
 		methods: {
+			upload(file, start, end, step, size, fm, loaded) {
+				var blob = file.slice(start, end)
+				fm.delete('video')
+				fm.append('video', blob)
+				if(this.videoId) {
+					this.ajax = '/admin/videos/' + this.videoId
+					fm.append('_method', 'PUT')
+				}
+				axios.post(this.ajax, fm)
+					.then( r => { 
+					this.videoId = r.data.videoId
+					loaded += end - start
+					this.progress = ((loaded / size) * 100) + '%'
+					start += step
+					if(start >= size || end >= size) return
+					
+					end = start + step
+					if(end > size) end = size
+
+					//setTimeout(() => {
+						this.upload(file, start, end, step, size, fm, loaded)
+					//}, 500)
+					
+        		})
+			},
 			onChange(e) {
 				var loaded = 0
 				var start = 0
-				let step = 1 * 1024 * 1024 // 1m
+				let step = 2 * 1024 * 1024 // 1m
 				var end = start + step
 
 				let file = e.target.files[0]
 				let size = file.size
 
 				if(end > size) end = size
-					
-				var blob = file.slice(start, end)
+				
 
-				let reader = new FileReader()
-				reader.readAsDataURL(blob)
+				let fm = new FormData
+				fm.append('postId', this.postId),
+				fm.append('slug', this.slug.toLowerCase().replace(/\s+/g, '-'))
 
-				let self = this
+				this.upload(file, start, end, step, size, fm, loaded)
 
-				reader.onload = function() {
-					axios.post('/admin/videos/uploadVideo/'+self.id, {'video': reader.result})
-					.then( () => { 
-						loaded += end - start
-						self.progress = ((loaded / size) * 100) + '%'
+				//var blob = file.slice(start, end)
 
-						start += step
-						if(start >= size || end >= size) {
-							location.reload()
-						}
+				//let reader = new FileReader()
+				//reader.readAsDataURL(blob)
 
-						end = start + step
-						if(end > size) end = size
+				// let self = this
 
-						blob = file.slice(start, end);
-                		reader.readAsDataURL(blob);
+				// reader.onload = function() {
+				// 	if(self.videoId) {
+				// 		self.ajax = '/admin/videos/' + self.videoId
+				// 	}
+				// 	axios.post(self.ajax, {
+				// 		'postId': self.postId,
+				// 		'slug': self.slug.toLowerCase().replace(/\s+/g, '-'),
+				// 		'video': reader.result
+				// 	}).then( r => { 
+				// 		self.videoId = r.data.videoId
+				// 		loaded += end - start
+				// 		self.progress = ((loaded / size) * 100) + '%'
 
-            		})              
+				// 		start += step
+				// 		if(start >= size || end >= size) {
+				// 			location.reload()
+				// 		}
 
-        		};
+				// 		end = start + step
+				// 		if(end > size) end = size
+
+				// 		blob = file.slice(start, end);
+    //             		reader.readAsDataURL(blob);
+    //         		})              
+    //     		};
 			}
 		}
 	}
