@@ -2,13 +2,13 @@
 	<div class="form-group">
         <label>Video</label>
         <input type="file" name="video" accept="video/*" @change="onChange">
-        <p>{{ progress }}</p>
+        <p v-show="progress">{{ progress }}</p>
     </div>
 </template>
 
 <script>
 	export default {
-		props: ['postId', 'slug'],
+		props: ['slug'],
 		data() {
 			return {
 				videoId: '',
@@ -24,22 +24,25 @@
 				if(this.videoId) {
 					this.ajax = '/admin/videos/' + this.videoId
 					fm.append('_method', 'PUT')
+				} else {
+					fm.delete('_method')
+					this.ajax = '/admin/videos'
 				}
+
 				axios.post(this.ajax, fm)
 					.then( r => { 
-					this.videoId = r.data.videoId
+					if(r.data.videoId != undefined) this.videoId = r.data.videoId
 					loaded += end - start
 					this.progress = ((loaded / size) * 100) + '%'
 					start += step
-					if(start >= size || end >= size) return
-					
+					if(start >= size || end >= size) {
+						location.reload()
+						return
+					}
 					end = start + step
 					if(end > size) end = size
 
-					//setTimeout(() => {
-						this.upload(file, start, end, step, size, fm, loaded)
-					//}, 500)
-					
+					this.upload(file, start, end, step, size, fm, loaded)
         		})
 			},
 			onChange(e) {
@@ -55,43 +58,9 @@
 				
 
 				let fm = new FormData
-				fm.append('postId', this.postId),
 				fm.append('slug', this.slug.toLowerCase().replace(/\s+/g, '-'))
 
 				this.upload(file, start, end, step, size, fm, loaded)
-
-				//var blob = file.slice(start, end)
-
-				//let reader = new FileReader()
-				//reader.readAsDataURL(blob)
-
-				// let self = this
-
-				// reader.onload = function() {
-				// 	if(self.videoId) {
-				// 		self.ajax = '/admin/videos/' + self.videoId
-				// 	}
-				// 	axios.post(self.ajax, {
-				// 		'postId': self.postId,
-				// 		'slug': self.slug.toLowerCase().replace(/\s+/g, '-'),
-				// 		'video': reader.result
-				// 	}).then( r => { 
-				// 		self.videoId = r.data.videoId
-				// 		loaded += end - start
-				// 		self.progress = ((loaded / size) * 100) + '%'
-
-				// 		start += step
-				// 		if(start >= size || end >= size) {
-				// 			location.reload()
-				// 		}
-
-				// 		end = start + step
-				// 		if(end > size) end = size
-
-				// 		blob = file.slice(start, end);
-    //             		reader.readAsDataURL(blob);
-    //         		})              
-    //     		};
 			}
 		}
 	}

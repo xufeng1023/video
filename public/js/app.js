@@ -42479,7 +42479,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-	props: ['postId', 'slug'],
+	props: ['slug'],
 	data: function data() {
 		return {
 			videoId: '',
@@ -42498,20 +42498,24 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 			if (this.videoId) {
 				this.ajax = '/admin/videos/' + this.videoId;
 				fm.append('_method', 'PUT');
+			} else {
+				fm.delete('_method');
+				this.ajax = '/admin/videos';
 			}
+
 			axios.post(this.ajax, fm).then(function (r) {
-				_this.videoId = r.data.videoId;
+				if (r.data.videoId != undefined) _this.videoId = r.data.videoId;
 				loaded += end - start;
 				_this.progress = loaded / size * 100 + '%';
 				start += step;
-				if (start >= size || end >= size) return;
-
+				if (start >= size || end >= size) {
+					location.reload();
+					return;
+				}
 				end = start + step;
 				if (end > size) end = size;
 
-				//setTimeout(() => {
 				_this.upload(file, start, end, step, size, fm, loaded);
-				//}, 500)
 			});
 		},
 		onChange: function onChange(e) {
@@ -42526,42 +42530,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 			if (end > size) end = size;
 
 			var fm = new FormData();
-			fm.append('postId', this.postId), fm.append('slug', this.slug.toLowerCase().replace(/\s+/g, '-'));
+			fm.append('slug', this.slug.toLowerCase().replace(/\s+/g, '-'));
 
 			this.upload(file, start, end, step, size, fm, loaded);
-
-			//var blob = file.slice(start, end)
-
-			//let reader = new FileReader()
-			//reader.readAsDataURL(blob)
-
-			// let self = this
-
-			// reader.onload = function() {
-			// 	if(self.videoId) {
-			// 		self.ajax = '/admin/videos/' + self.videoId
-			// 	}
-			// 	axios.post(self.ajax, {
-			// 		'postId': self.postId,
-			// 		'slug': self.slug.toLowerCase().replace(/\s+/g, '-'),
-			// 		'video': reader.result
-			// 	}).then( r => { 
-			// 		self.videoId = r.data.videoId
-			// 		loaded += end - start
-			// 		self.progress = ((loaded / size) * 100) + '%'
-
-			// 		start += step
-			// 		if(start >= size || end >= size) {
-			// 			location.reload()
-			// 		}
-
-			// 		end = start + step
-			// 		if(end > size) end = size
-
-			// 		blob = file.slice(start, end);
-			//             		reader.readAsDataURL(blob);
-			//         		})              
-			//     		};
 		}
 	}
 });
@@ -42582,7 +42553,14 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     on: {
       "change": _vm.onChange
     }
-  }), _vm._v(" "), _c('p', [_vm._v(_vm._s(_vm.progress))])])
+  }), _vm._v(" "), _c('p', {
+    directives: [{
+      name: "show",
+      rawName: "v-show",
+      value: (_vm.progress),
+      expression: "progress"
+    }]
+  }, [_vm._v(_vm._s(_vm.progress))])])
 },staticRenderFns: []}
 module.exports.render._withStripped = true
 if (false) {

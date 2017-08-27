@@ -37,12 +37,11 @@ class VideoController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {
-        $path = $request->video->store('video', 'public');
+    { 
         $video = Video::create([
-            'post_id' => $request->postId,
+            'post_id' => $this->postId($request),
             'slug' => $request->slug,
-            'link' => $path,
+            'link' => $request->video->store('video', 'public'),
             'thumbnail' => ''
         ]);
         return ['videoId' => $video->id];
@@ -79,13 +78,13 @@ class VideoController extends Controller
      */
     public function update(Request $request, Video $video)
     {   
-        //ini_set('memory_limit', '200M');
-        //Storage::append('public/'.$video->link, file_get_contents($request->video), '');
-        echo (int) $_SERVER['CONTENT_LENGTH']."\n";
-        echo memory_get_usage(true)."\n";
-        echo memory_get_usage(false)."\n";
-        echo memory_get_peak_usage(true)."\n";
-        echo memory_get_peak_usage(false)."\n";
+        $file = storage_path('app/public/'.$video->link);
+
+        $handle = fopen($file, 'a');
+
+        file_put_contents($file, file_get_contents($request->video), FILE_APPEND | LOCK_EX);
+
+        fclose($handle);
     }
 
     /**
@@ -97,5 +96,12 @@ class VideoController extends Controller
     public function destroy(Video $video)
     {
 
+    }
+
+    private function postId($request)
+    {
+        $referer = $request->headers->get('referer');
+        preg_match('/\/(\d+)\//', $referer, $match);
+        return $match[1];
     }
 }
