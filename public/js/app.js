@@ -936,9 +936,10 @@ window.Bus = new Vue();
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 Vue.component('flash', __webpack_require__(38));
-Vue.component('videoInput', __webpack_require__(46));
+Vue.component('videoInput', __webpack_require__(70));
+Vue.component('videoOne', __webpack_require__(74));
 Vue.component('postTitleInput', __webpack_require__(9));
-Vue.component('postImageInput', __webpack_require__(51));
+Vue.component('imageInput', __webpack_require__(66));
 Vue.component('updatePostForm', __webpack_require__(54));
 
 var app = new Vue({
@@ -42424,153 +42425,9 @@ if (false) {
 }
 
 /***/ }),
-/* 46 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var disposed = false
-var Component = __webpack_require__(1)(
-  /* script */
-  __webpack_require__(47),
-  /* template */
-  __webpack_require__(48),
-  /* styles */
-  null,
-  /* scopeId */
-  null,
-  /* moduleIdentifier (server only) */
-  null
-)
-Component.options.__file = "C:\\Users\\xu feng\\Desktop\\video\\resources\\assets\\js\\components\\videoInput.vue"
-if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key.substr(0, 2) !== "__"})) {console.error("named exports are not supported in *.vue files.")}
-if (Component.options.functional) {console.error("[vue-loader] videoInput.vue: functional components are not supported with templates, they should use render functions.")}
-
-/* hot reload */
-if (false) {(function () {
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), false)
-  if (!hotAPI.compatible) return
-  module.hot.accept()
-  if (!module.hot.data) {
-    hotAPI.createRecord("data-v-7785bfd2", Component.options)
-  } else {
-    hotAPI.reload("data-v-7785bfd2", Component.options)
-  }
-  module.hot.dispose(function (data) {
-    disposed = true
-  })
-})()}
-
-module.exports = Component.exports
-
-
-/***/ }),
-/* 47 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-//
-//
-//
-//
-//
-//
-//
-//
-
-/* harmony default export */ __webpack_exports__["default"] = ({
-	props: ['slug'],
-	data: function data() {
-		return {
-			videoId: '',
-			progress: 0,
-			ajax: '/admin/videos'
-		};
-	},
-
-	methods: {
-		upload: function upload(file, start, end, step, size, fm, loaded) {
-			var _this = this;
-
-			var blob = file.slice(start, end);
-			fm.delete('video');
-			fm.append('video', blob);
-			if (this.videoId) {
-				this.ajax = '/admin/videos/' + this.videoId;
-				fm.append('_method', 'PUT');
-			} else {
-				fm.delete('_method');
-				this.ajax = '/admin/videos';
-			}
-
-			axios.post(this.ajax, fm).then(function (r) {
-				if (r.data.videoId != undefined) _this.videoId = r.data.videoId;
-				loaded += end - start;
-				_this.progress = loaded / size * 100 + '%';
-				start += step;
-				if (start >= size || end >= size) {
-					location.reload();
-					return;
-				}
-				end = start + step;
-				if (end > size) end = size;
-
-				_this.upload(file, start, end, step, size, fm, loaded);
-			});
-		},
-		onChange: function onChange(e) {
-			var loaded = 0;
-			var start = 0;
-			var step = 2 * 1024 * 1024; // 1m
-			var end = start + step;
-
-			var file = e.target.files[0];
-			var size = file.size;
-
-			if (end > size) end = size;
-
-			var fm = new FormData();
-			fm.append('slug', this.slug.toLowerCase().replace(/\s+/g, '-'));
-
-			this.upload(file, start, end, step, size, fm, loaded);
-		}
-	}
-});
-
-/***/ }),
-/* 48 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('div', {
-    staticClass: "form-group"
-  }, [_c('label', [_vm._v("Video")]), _vm._v(" "), _c('input', {
-    attrs: {
-      "type": "file",
-      "name": "video",
-      "accept": "video/*"
-    },
-    on: {
-      "change": _vm.onChange
-    }
-  }), _vm._v(" "), _c('p', {
-    directives: [{
-      name: "show",
-      rawName: "v-show",
-      value: (_vm.progress),
-      expression: "progress"
-    }]
-  }, [_vm._v(_vm._s(_vm.progress))])])
-},staticRenderFns: []}
-module.exports.render._withStripped = true
-if (false) {
-  module.hot.accept()
-  if (module.hot.data) {
-     require("vue-hot-reload-api").rerender("data-v-7785bfd2", module.exports)
-  }
-}
-
-/***/ }),
+/* 46 */,
+/* 47 */,
+/* 48 */,
 /* 49 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -42644,227 +42501,9 @@ if (false) {
 }
 
 /***/ }),
-/* 51 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var disposed = false
-var Component = __webpack_require__(1)(
-  /* script */
-  __webpack_require__(52),
-  /* template */
-  __webpack_require__(53),
-  /* styles */
-  null,
-  /* scopeId */
-  null,
-  /* moduleIdentifier (server only) */
-  null
-)
-Component.options.__file = "C:\\Users\\xu feng\\Desktop\\video\\resources\\assets\\js\\components\\PostImageInput.vue"
-if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key.substr(0, 2) !== "__"})) {console.error("named exports are not supported in *.vue files.")}
-if (Component.options.functional) {console.error("[vue-loader] PostImageInput.vue: functional components are not supported with templates, they should use render functions.")}
-
-/* hot reload */
-if (false) {(function () {
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), false)
-  if (!hotAPI.compatible) return
-  module.hot.accept()
-  if (!module.hot.data) {
-    hotAPI.createRecord("data-v-3df83b5c", Component.options)
-  } else {
-    hotAPI.reload("data-v-3df83b5c", Component.options)
-  }
-  module.hot.dispose(function (data) {
-    disposed = true
-  })
-})()}
-
-module.exports = Component.exports
-
-
-/***/ }),
-/* 52 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
-/* harmony default export */ __webpack_exports__["default"] = ({
-	props: ['data', 'id', 'src', 'image'],
-	data: function data() {
-		return {
-			images: JSON.parse(this.image)
-		};
-	},
-
-	filters: {
-		SRC: function SRC(value, baseUrl) {
-			return baseUrl + '/' + value;
-		}
-	},
-	computed: {
-		computedImages: function computedImages() {
-			return _.chunk(this.images, 3);
-		}
-	},
-	methods: {
-		onChange: function onChange(e) {
-			var _this = this;
-
-			var files = e.target.files;
-			if (files.length === 0) return;
-
-			var data = new FormData();
-
-			for (var i = 0; i < files.length; i++) {
-				data.append('images[]', files[i]);
-			}
-
-			data.append('post_id', this.id);
-			axios.post('/admin/images', data).then(function (r) {
-				r.data.slugs.forEach(function (element) {
-					return _this.images.push(element);
-				});
-
-				Bus.$emit('flash', {
-					message: r.data.message,
-					type: 'success'
-				});
-			}).catch(function (r) {
-				Bus.$emit('flash', {
-					message: r.response.data,
-					type: 'danger'
-				});
-			});
-		},
-		thumb: function thumb(id) {
-			var _this2 = this;
-
-			axios.post('/admin/images/' + id, { _method: 'PUT' }).then(function (r) {
-				_this2.images.forEach(function (image) {
-					image.is_thumbnail = 0;
-					if (image.id == id) image.is_thumbnail = 1;
-				});
-
-				Bus.$emit('flash', {
-					message: r.data.message,
-					type: 'success'
-				});
-			});
-		},
-		remove: function remove(id) {
-			var _this3 = this;
-
-			axios.post('/admin/images/' + id, { _method: 'DELETE' }).then(function (r) {
-				_this3.removeImage(id);
-
-				Bus.$emit('flash', {
-					message: r.data.message,
-					type: 'success'
-				});
-			});
-		},
-		removeImage: function removeImage(id) {
-			this.images = this.images.filter(function (image) {
-				return image.id != id;
-			});
-		}
-	}
-});
-
-/***/ }),
-/* 53 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('div', [_c('div', {
-    staticClass: "form-group"
-  }, [_c('label', [_vm._v("Images")]), _vm._v(" "), _c('input', {
-    attrs: {
-      "type": "file",
-      "name": "screenshots[]",
-      "accept": "image/*",
-      "multiple": ""
-    },
-    on: {
-      "change": _vm.onChange
-    }
-  })]), _vm._v(" "), _vm._l((_vm.computedImages), function(pic) {
-    return _c('div', {
-      staticClass: "row"
-    }, _vm._l((pic), function(slug) {
-      return _c('div', {
-        staticClass: "col-sm-4"
-      }, [_c('div', {
-        staticClass: "thumbnail",
-        class: {
-          'is-thumbnail': slug.is_thumbnail
-        }
-      }, [_c('img', {
-        attrs: {
-          "src": _vm._f("SRC")(slug.slug, _vm.src),
-          "width": "100%"
-        }
-      }), _vm._v(" "), _c('button', {
-        staticClass: "btn btn-success btn-xs",
-        attrs: {
-          "type": "button"
-        },
-        on: {
-          "click": function($event) {
-            _vm.thumb(slug.id)
-          }
-        }
-      }, [_c('span', {
-        staticClass: "glyphicon glyphicon-thumbs-up"
-      })]), _vm._v(" "), _c('button', {
-        staticClass: "btn btn-danger btn-xs",
-        attrs: {
-          "type": "button"
-        },
-        on: {
-          "click": function($event) {
-            _vm.remove(slug.id)
-          }
-        }
-      }, [_c('span', {
-        staticClass: "glyphicon glyphicon-trash"
-      })])])])
-    }))
-  })], 2)
-},staticRenderFns: []}
-module.exports.render._withStripped = true
-if (false) {
-  module.hot.accept()
-  if (module.hot.data) {
-     require("vue-hot-reload-api").rerender("data-v-3df83b5c", module.exports)
-  }
-}
-
-/***/ }),
+/* 51 */,
+/* 52 */,
+/* 53 */,
 /* 54 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -43018,6 +42657,509 @@ if (false) {
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 58 */,
+/* 59 */,
+/* 60 */,
+/* 61 */,
+/* 62 */,
+/* 63 */,
+/* 64 */,
+/* 65 */,
+/* 66 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var Component = __webpack_require__(1)(
+  /* script */
+  __webpack_require__(67),
+  /* template */
+  __webpack_require__(68),
+  /* styles */
+  null,
+  /* scopeId */
+  null,
+  /* moduleIdentifier (server only) */
+  null
+)
+Component.options.__file = "C:\\Users\\xu feng\\Desktop\\video\\resources\\assets\\js\\components\\ImageInput.vue"
+if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key.substr(0, 2) !== "__"})) {console.error("named exports are not supported in *.vue files.")}
+if (Component.options.functional) {console.error("[vue-loader] ImageInput.vue: functional components are not supported with templates, they should use render functions.")}
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-056b7312", Component.options)
+  } else {
+    hotAPI.reload("data-v-056b7312", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 67 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+	props: ['data', 'image'],
+	data: function data() {
+		return {
+			images: JSON.parse(this.image)
+		};
+	},
+
+	filters: {
+		SRC: function SRC(value) {
+			return '/storage/' + value;
+		}
+	},
+	computed: {
+		computedImages: function computedImages() {
+			return _.chunk(this.images, 3);
+		}
+	},
+	methods: {
+		onChange: function onChange(e) {
+			var _this = this;
+
+			var files = e.target.files;
+			if (files.length === 0) return;
+
+			var data = new FormData();
+
+			for (var i = 0; i < files.length; i++) {
+				data.append('images[]', files[i]);
+			}
+
+			axios.post('/admin/images', data).then(function (r) {
+				r.data.slugs.forEach(function (element) {
+					return _this.images.push(element);
+				});
+
+				Bus.$emit('flash', {
+					message: r.data.message,
+					type: 'success'
+				});
+			}).catch(function (r) {
+				Bus.$emit('flash', {
+					message: r.response.data,
+					type: 'danger'
+				});
+			});
+		},
+		thumb: function thumb(id) {
+			var _this2 = this;
+
+			axios.post('/admin/images/' + id, { _method: 'PUT' }).then(function (r) {
+				_this2.images.forEach(function (image) {
+					image.is_thumbnail = 0;
+					if (image.id == id) image.is_thumbnail = 1;
+				});
+
+				Bus.$emit('flash', {
+					message: r.data.message,
+					type: 'success'
+				});
+			});
+		},
+		remove: function remove(id) {
+			var _this3 = this;
+
+			axios.post('/admin/images/' + id, { _method: 'DELETE' }).then(function (r) {
+				_this3.removeImage(id);
+
+				Bus.$emit('flash', {
+					message: r.data.message,
+					type: 'success'
+				});
+			});
+		},
+		removeImage: function removeImage(id) {
+			this.images = this.images.filter(function (image) {
+				return image.id != id;
+			});
+		}
+	}
+});
+
+/***/ }),
+/* 68 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', [_c('div', {
+    staticClass: "form-group"
+  }, [_c('label', [_vm._v("Images")]), _vm._v(" "), _c('input', {
+    attrs: {
+      "type": "file",
+      "name": "screenshots[]",
+      "accept": "image/*",
+      "multiple": ""
+    },
+    on: {
+      "change": _vm.onChange
+    }
+  })]), _vm._v(" "), _vm._l((_vm.computedImages), function(pic) {
+    return _c('div', {
+      staticClass: "row"
+    }, _vm._l((pic), function(slug) {
+      return _c('div', {
+        staticClass: "col-sm-4"
+      }, [_c('div', {
+        staticClass: "thumbnail",
+        class: {
+          'is-thumbnail': slug.is_thumbnail
+        }
+      }, [_c('img', {
+        attrs: {
+          "src": _vm._f("SRC")(slug.slug),
+          "width": "100%"
+        }
+      }), _vm._v(" "), _c('button', {
+        staticClass: "btn btn-success btn-xs",
+        attrs: {
+          "type": "button"
+        },
+        on: {
+          "click": function($event) {
+            _vm.thumb(slug.id)
+          }
+        }
+      }, [_c('span', {
+        staticClass: "glyphicon glyphicon-thumbs-up"
+      })]), _vm._v(" "), _c('button', {
+        staticClass: "btn btn-danger btn-xs",
+        attrs: {
+          "type": "button"
+        },
+        on: {
+          "click": function($event) {
+            _vm.remove(slug.id)
+          }
+        }
+      }, [_c('span', {
+        staticClass: "glyphicon glyphicon-trash"
+      })])])])
+    }))
+  })], 2)
+},staticRenderFns: []}
+module.exports.render._withStripped = true
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+     require("vue-hot-reload-api").rerender("data-v-056b7312", module.exports)
+  }
+}
+
+/***/ }),
+/* 69 */,
+/* 70 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var Component = __webpack_require__(1)(
+  /* script */
+  __webpack_require__(71),
+  /* template */
+  __webpack_require__(72),
+  /* styles */
+  null,
+  /* scopeId */
+  null,
+  /* moduleIdentifier (server only) */
+  null
+)
+Component.options.__file = "C:\\Users\\xu feng\\Desktop\\video\\resources\\assets\\js\\components\\VideoInput.vue"
+if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key.substr(0, 2) !== "__"})) {console.error("named exports are not supported in *.vue files.")}
+if (Component.options.functional) {console.error("[vue-loader] VideoInput.vue: functional components are not supported with templates, they should use render functions.")}
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-3bcc8bf2", Component.options)
+  } else {
+    hotAPI.reload("data-v-3bcc8bf2", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 71 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+	props: ['slug'],
+	data: function data() {
+		return {
+			videoId: '',
+			progress: 0,
+			ajax: '/admin/videos'
+		};
+	},
+
+	methods: {
+		upload: function upload(file, start, end, step, size, fm, loaded) {
+			var _this = this;
+
+			var blob = file.slice(start, end);
+			fm.delete('video');
+			fm.append('video', blob);
+			if (this.videoId) {
+				this.ajax = '/admin/videos/' + this.videoId;
+				fm.append('_method', 'PUT');
+			} else {
+				fm.delete('_method');
+				this.ajax = '/admin/videos';
+			}
+
+			axios.post(this.ajax, fm).then(function (r) {
+				if (r.data.videoId != undefined) _this.videoId = r.data.videoId;
+				loaded += end - start;
+				_this.progress = loaded / size * 100 + '%';
+				start += step;
+				if (start >= size || end >= size) {
+					location.reload();
+					return;
+				}
+				end = start + step;
+				if (end > size) end = size;
+
+				_this.upload(file, start, end, step, size, fm, loaded);
+			});
+		},
+		onChange: function onChange(e) {
+			var loaded = 0;
+			var start = 0;
+			var step = 2 * 1024 * 1024; // 1m
+			var end = start + step;
+
+			var file = e.target.files[0];
+			var size = file.size;
+
+			if (end > size) end = size;
+
+			var fm = new FormData();
+			fm.append('slug', this.slug.toLowerCase().replace(/\s+/g, '-'));
+
+			this.upload(file, start, end, step, size, fm, loaded);
+		}
+	}
+});
+
+/***/ }),
+/* 72 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', {
+    staticClass: "form-group"
+  }, [_c('label', [_vm._v("Video")]), _vm._v(" "), _c('input', {
+    attrs: {
+      "type": "file",
+      "name": "video",
+      "accept": "video/*"
+    },
+    on: {
+      "change": _vm.onChange
+    }
+  }), _vm._v(" "), _c('p', {
+    directives: [{
+      name: "show",
+      rawName: "v-show",
+      value: (_vm.progress),
+      expression: "progress"
+    }]
+  }, [_vm._v(_vm._s(_vm.progress))])])
+},staticRenderFns: []}
+module.exports.render._withStripped = true
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+     require("vue-hot-reload-api").rerender("data-v-3bcc8bf2", module.exports)
+  }
+}
+
+/***/ }),
+/* 73 */,
+/* 74 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var Component = __webpack_require__(1)(
+  /* script */
+  __webpack_require__(75),
+  /* template */
+  __webpack_require__(76),
+  /* styles */
+  null,
+  /* scopeId */
+  null,
+  /* moduleIdentifier (server only) */
+  null
+)
+Component.options.__file = "C:\\Users\\xu feng\\Desktop\\video\\resources\\assets\\js\\components\\VideoOne.vue"
+if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key.substr(0, 2) !== "__"})) {console.error("named exports are not supported in *.vue files.")}
+if (Component.options.functional) {console.error("[vue-loader] VideoOne.vue: functional components are not supported with templates, they should use render functions.")}
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-42da988e", Component.options)
+  } else {
+    hotAPI.reload("data-v-42da988e", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 75 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+	props: ['video'],
+	data: function data() {
+		return {
+			src: ''
+		};
+	},
+	created: function created() {
+		if (this.video.thumbnail) {
+			this.src = this.video.thumbnail.slug;
+		}
+	},
+
+	filters: {
+		IMG: function IMG(value) {
+			return '/storage/' + value;
+		}
+	},
+	methods: {
+		onChange: function onChange(e) {
+			var _this = this;
+
+			var fm = new FormData();
+			fm.append('image', e.target.files[0]);
+			axios.post('/admin/videos/thumbnail/' + this.video.id, fm).then(function (r) {
+				_this.src = r.data.src;
+				e.target.value = null;
+			});
+		}
+	}
+});
+
+/***/ }),
+/* 76 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', {
+    staticClass: "thumbnail"
+  }, [(_vm.src) ? _c('img', {
+    attrs: {
+      "src": _vm._f("IMG")(_vm.src)
+    }
+  }) : _vm._e(), _vm._v(" "), _c('div', {
+    staticClass: "caption"
+  }, [_c('h4', {
+    domProps: {
+      "textContent": _vm._s(_vm.video.slug)
+    }
+  }), _vm._v(" "), _c('p', [_c('input', {
+    attrs: {
+      "type": "file",
+      "accept": "image/*"
+    },
+    on: {
+      "change": _vm.onChange
+    }
+  })])])])
+},staticRenderFns: []}
+module.exports.render._withStripped = true
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+     require("vue-hot-reload-api").rerender("data-v-42da988e", module.exports)
+  }
+}
 
 /***/ })
 /******/ ]);

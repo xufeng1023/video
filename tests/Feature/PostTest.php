@@ -17,4 +17,12 @@ class PostTest extends TestCase
     	$this->login()->post('/admin/posts', ['title' => $post->title])
     		->assertSessionHasErrors('title');
     }
+
+    function test_on_post_edit_page_post_will_eager_load_its_videos()
+    {
+    	$post = $this->create('Post');
+    	$video = $this->create('Video', ['post_id' => $post->id]);
+    	$this->login()->get('/admin/posts/'.$post->id.'/edit')
+    		->assertSee($post->videos()->first()->slug);
+    }
 }

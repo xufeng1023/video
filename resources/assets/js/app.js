@@ -17,9 +17,10 @@ window.Bus = new Vue();
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 Vue.component('flash', require('./components/Flash.vue'));
-Vue.component('videoInput', require('./components/videoInput.vue'));
+Vue.component('videoInput', require('./components/VideoInput.vue'));
+Vue.component('videoOne', require('./components/VideoOne.vue'));
 Vue.component('postTitleInput', require('./components/PostTitleInput.vue'));
-Vue.component('postImageInput', require('./components/PostImageInput.vue'));
+Vue.component('imageInput', require('./components/ImageInput.vue'));
 Vue.component('updatePostForm', require('./components/UpdatePostForm.vue'));
 
 const app = new Vue({

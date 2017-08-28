@@ -8,13 +8,18 @@
                 <div class="panel-body">
                     <update-post-form data="{{ $post }}"></update-post-form>
                     <hr>
-                    <post-image-input 
-                        src="{{ asset('storage/') }}" 
-                        id="{{ $post->id }}"
-                        image="{{ $post->images }}"
-                    ></post-image-input>
+                    <image-input image="{{ $post->images }}"></image-input>
                     <hr>
                     <video-input slug="{{ $post->videoSlug() }}"></video-input>
+                    @foreach($post->videos->chunk(3) as $chunk)
+                        <div class="row">
+                            @foreach($chunk as $video)
+                                <div class="col-sm-4">
+                                    <video-one :video="{{ $video }}"></video-one>
+                                </div>
+                            @endforeach
+                        </div>
+                    @endforeach
                 </div>
             </div>
         </div>

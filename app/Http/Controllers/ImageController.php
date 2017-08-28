@@ -35,15 +35,10 @@ class ImageController extends Controller
      */
     public function store(Request $request)
     {
-        $this->validate($request, [
-            'post_id' => 'required|exists:posts,id',
-            'images' => 'required|array'
-        ]);
-
         foreach($request->images as $key => $image) {
             $slugs[$key]['slug'] = $image->store('upload', 'public');
             $pic = Image::create([
-                'post_id' => $request->post_id,
+                'post_id' => $this->postId($request),
                 'slug' => $slugs[$key]['slug'] 
             ]);
             $slugs[$key]['id'] = $pic->id;

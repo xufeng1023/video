@@ -37,13 +37,13 @@ class VideoController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    { 
+    {
         $video = Video::create([
             'post_id' => $this->postId($request),
             'slug' => $request->slug,
-            'link' => $request->video->store('video', 'public'),
-            'thumbnail' => ''
+            'link' => $request->video->store('video', 'public')
         ]);
+
         return ['videoId' => $video->id];
     }
 
@@ -98,10 +98,14 @@ class VideoController extends Controller
 
     }
 
-    private function postId($request)
+    public function thumbnail(Request $request, Video $video)
     {
-        $referer = $request->headers->get('referer');
-        preg_match('/\/(\d+)\//', $referer, $match);
-        return $match[1];
+        if($thumbnail = $video->thumbnail) $thumbnail->deleteFiles()->delete();
+
+        $video = $video->thumbnail()->create([
+            'slug' => $request->image->store('upload', 'public')
+        ]);
+
+        return ['src' => $video->slug];
     }
 }

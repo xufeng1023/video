@@ -7,7 +7,7 @@
 	    <div class="row" v-for="pic in computedImages">
             <div class="col-sm-4" v-for="slug in pic">
                 <div class="thumbnail" :class="{'is-thumbnail':slug.is_thumbnail}">
-                    <img :src="slug.slug | SRC(src)" width="100%">
+                    <img :src="slug.slug | SRC" width="100%">
                     <button type="button" class="btn btn-success btn-xs" @click="thumb(slug.id)">
                     	<span class="glyphicon glyphicon-thumbs-up"></span>
                     </button>
@@ -22,15 +22,15 @@
 
 <script>
 	export default {
-		props: ['data', 'id', 'src', 'image'],
+		props: ['data', 'image'],
 		data() {
 			return {
 				images: JSON.parse(this.image)
 			}
 		},
 		filters: {
-			SRC: function(value, baseUrl) {
-				return baseUrl + '/' + value
+			SRC: function(value) {
+				return '/storage/' + value
 			}
 		},
 		computed: {
@@ -49,7 +49,6 @@
 					data.append('images[]', files[i])
 				}
 
-				data.append('post_id', this.id)
 				axios.post('/admin/images', data)
 					.then((r) => {
 						r.data.slugs.forEach(element => this.images.push(element))

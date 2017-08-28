@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Post extends Model
 {
-    protected $fillable = ['title'];
+    protected $fillable = ['title', 'views'];
 
     public function images()
     {
@@ -22,6 +22,15 @@ class Post extends Model
     {
     	$this->images->each(function($item) {
             $item->deleteFiles()->delete();
+        });
+
+        return $this;
+    }
+
+    public function deleteVideos()
+    {
+        $this->videos->each(function($item) {
+            $item->deleteThumbnail()->deleteFiles()->delete();
         });
 
         return $this;

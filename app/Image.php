@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Image extends Model
 {
-    protected $fillable = ['post_id', 'slug'];
+    protected $fillable = ['post_id', 'video_id', 'slug'];
 
     public function post()
     {

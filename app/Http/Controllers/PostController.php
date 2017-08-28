@@ -52,7 +52,8 @@ class PostController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function edit(Post $post)
-    {
+    {   
+        $post->load('videos.thumbnail')->get();
         return view('admin.post', compact('post'));
     }
 
@@ -77,7 +78,7 @@ class PostController extends Controller
      */
     public function destroy(Post $post)
     {
-        $post->deleteImages()->delete();
+        $post->deleteImages()->deleteVideos()->delete();
 
         return redirect('/admin');
     }

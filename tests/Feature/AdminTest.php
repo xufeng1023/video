@@ -41,12 +41,16 @@ class AdminTest extends TestCase
     function test_admin_can_delete_a_post()
     {
         $file = $this->file();
+        $file2 = $this->file();
         $post = $this->create('Post');
-        $this->login()->post('/admin/images', ['post_id' => $post->id, 'images' => [$file]]);
+        $this->login()->post('/admin/images', ['postId' => $post->id, 'images' => [$file]]);
+        $this->post('/admin/videos', ['postId' => $post->id, 'video' => $file2, 'slug' => $post->title]);
         $this->delete('/admin/posts/'.$post->id);
         $this->assertDatabaseMissing('posts', $post->toArray());
         $this->assertDatabaseMissing('images', ['slug' => 'upload/'.$file->hashName()]);
+        $this->assertDatabaseMissing('videos', ['slug' => 'video/'.$file2->hashName()]);
         $this->fileMissing($file->hashName());
+        $this->fileMissing($file2->hashName(), 'video');
     }
 
     function test_admin_can_update_a_post()
@@ -62,7 +66,7 @@ class AdminTest extends TestCase
         $post = $this->create('Post');
         $image = $this->file();
         $data = [
-            'post_id' => $post->id,
+            'postId' => $post->id,
             'images' => [$image]
         ];
         
@@ -76,7 +80,7 @@ class AdminTest extends TestCase
         $image = $this->file();
 
         $data = [
-            'post_id' => $this->create('Post')->id,
+            'postId' => $this->create('Post')->id,
             'images' => [$image]
         ];
         
@@ -104,5 +108,14 @@ class AdminTest extends TestCase
             'video' => $file
         ]);
         $this->assertDatabaseHas('videos', ['post_id' => $post->id, 'link' => 'video/'.$file->hashName()]);
+    }
+
+    function test_admin_can_set_a_thumbnail_for_a_video()
+    {
+        $video = $this->create('Video');
+        $file = $this->file();
+        $this->login()->post('/admin/videos/thumbnail/'.$video->id, ['image' => $file]);
+        $this->assertDatabaseHas('images', ['video_id' => $video->id, 'slug' => 'upload/'.$file->hashName()]);
+        $this->fileExist($file->hashName());
     }
 }
