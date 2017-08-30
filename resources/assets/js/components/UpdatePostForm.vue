@@ -30,12 +30,13 @@
 		methods: {
 			onSubmit(e) {
 				let data = new FormData(e.target)
-				axios.post('/admin/posts/'+this.post.id, data)
+				axios.post('/admin/posts/'+this.post.slug, data)
 					.then((r) => {
 						Bus.$emit('flash', {
 							message: r.data.message,
 							type: 'success'
 						})
+						location.reload()
 					}, (r) => {
 						Bus.$emit('flash', {
 							message: 'Failed!',

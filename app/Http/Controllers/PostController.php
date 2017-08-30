@@ -40,9 +40,12 @@ class PostController extends Controller
             'title' => 'required|unique:posts'
         ]);
 
-        $post = Post::create($request->all());
+        $post = Post::create([
+            'title' => $request->title,
+            'slug' => $this->generateSlug($request->title)
+        ]);
 
-        return redirect('/admin/posts/'.$post->id.'/edit');
+        return redirect('/admin/posts/'.$post->slug.'/edit');
     }
 
     /**
@@ -66,7 +69,11 @@ class PostController extends Controller
      */
     public function update(Request $request, Post $post)
     {
-        $post->update($request->all());
+        $post->update([
+            'title' => $request->title,
+            'slug' => $this->generateSlug($request->title)
+        ]);
+
         return ['message' => 'Updated!'];
     }
 
@@ -81,5 +88,10 @@ class PostController extends Controller
         $post->deleteImages()->deleteVideos()->delete();
 
         return redirect('/admin');
+    }
+
+    private function generateSlug($title)
+    {
+        return str_replace(' ', '-', strtolower($title));
     }
 }

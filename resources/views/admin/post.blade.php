@@ -8,9 +8,9 @@
                 <div class="panel-body">
                     <update-post-form data="{{ $post }}"></update-post-form>
                     <hr>
-                    <image-input image="{{ $post->images }}"></image-input>
+                    <image-input post="{{ $post->id }}" image="{{ $post->images }}"></image-input>
                     <hr>
-                    <video-input slug="{{ $post->videoSlug() }}"></video-input>
+                    <video-input post="{{ $post->id }}" slug="{{ $post->videoSlug() }}"></video-input>
                     @foreach($post->videos->chunk(3) as $chunk)
                         <div class="row">
                             @foreach($chunk as $video)

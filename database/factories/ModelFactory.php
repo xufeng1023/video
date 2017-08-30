@@ -13,8 +13,10 @@ $factory->define(App\User::class, function (Faker\Generator $faker) {
 });
 
 $factory->define(App\Post::class, function (Faker\Generator $faker) {
+    $title = $faker->sentence;
     return [
-        'title' => $faker->sentence,
+        'title' => $title,
+        'slug' => str_replace(' ', '-', strtolower($title))
     ];
 });
 

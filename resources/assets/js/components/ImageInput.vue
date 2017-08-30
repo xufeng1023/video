@@ -22,7 +22,7 @@
 
 <script>
 	export default {
-		props: ['data', 'image'],
+		props: ['post', 'image'],
 		data() {
 			return {
 				images: JSON.parse(this.image)
@@ -48,6 +48,8 @@
 				for(var i = 0; i < files.length; i++) {
 					data.append('images[]', files[i])
 				}
+
+				data.append('postId', this.post)
 
 				axios.post('/admin/images', data)
 					.then((r) => {

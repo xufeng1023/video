@@ -22,7 +22,7 @@ class PostTest extends TestCase
     {
     	$post = $this->create('Post');
     	$video = $this->create('Video', ['post_id' => $post->id]);
-    	$this->login()->get('/admin/posts/'.$post->id.'/edit')
+    	$this->login()->get('/admin/posts/'.$post->slug.'/edit')
     		->assertSee($post->videos()->first()->slug);
     }
 }

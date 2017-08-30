@@ -1,4 +1,4 @@
-<form action="/admin/posts/{{ $post->id }}" method="POST">
+<form action="/admin/posts/{{ $post->slug }}" method="POST">
     {{ csrf_field() }}
     <input type="hidden" name="_method" value="DELETE">
     <button type="submit" class="btn btn-xs btn-danger">

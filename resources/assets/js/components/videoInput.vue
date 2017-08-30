@@ -8,7 +8,7 @@
 
 <script>
 	export default {
-		props: ['slug'],
+		props: ['post', 'slug'],
 		data() {
 			return {
 				videoId: '',
@@ -21,8 +21,10 @@
 				var blob = file.slice(start, end)
 				fm.delete('video')
 				fm.append('video', blob)
+				fm.append('postId', this.post)
+				
 				if(this.videoId) {
-					this.ajax = '/admin/videos/' + this.videoId
+					this.ajax = '/admin/videos/' + fm.get('slug')
 					fm.append('_method', 'PUT')
 				} else {
 					fm.delete('_method')
@@ -58,7 +60,7 @@
 				
 
 				let fm = new FormData
-				fm.append('slug', this.slug.toLowerCase().replace(/\s+/g, '-'))
+				fm.append('slug', this.slug)
 
 				this.upload(file, start, end, step, size, fm, loaded)
 			}

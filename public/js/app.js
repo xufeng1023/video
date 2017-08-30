@@ -42480,7 +42480,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-	props: ['slug'],
+	props: ['post', 'slug'],
 	data: function data() {
 		return {
 			videoId: '',
@@ -42496,8 +42496,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 			var blob = file.slice(start, end);
 			fm.delete('video');
 			fm.append('video', blob);
+			fm.append('postId', this.post);
+
 			if (this.videoId) {
-				this.ajax = '/admin/videos/' + this.videoId;
+				this.ajax = '/admin/videos/' + fm.get('slug');
 				fm.append('_method', 'PUT');
 			} else {
 				fm.delete('_method');
@@ -42531,7 +42533,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 			if (end > size) end = size;
 
 			var fm = new FormData();
-			fm.append('slug', this.slug.toLowerCase().replace(/\s+/g, '-'));
+			fm.append('slug', this.slug);
 
 			this.upload(file, start, end, step, size, fm, loaded);
 		}
@@ -42657,8 +42659,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 		}
 	},
 	methods: {
-		remove: function remove(id) {
-			axios.post('/admin/videos/' + id, { '_method': 'DELETE' }).then(function () {
+		remove: function remove(slug) {
+			axios.post('/admin/videos/' + slug, { '_method': 'DELETE' }).then(function () {
 				location.reload();
 			});
 		},
@@ -42667,7 +42669,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 			var fm = new FormData();
 			fm.append('image', e.target.files[0]);
-			axios.post('/admin/videos/thumbnail/' + this.video.id, fm).then(function (r) {
+			axios.post('/admin/videos/thumbnail/' + this.video.slug, fm).then(function (r) {
 				_this.src = r.data.src;
 				e.target.value = null;
 			});
@@ -42684,7 +42686,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     staticClass: "thumbnail"
   }, [(_vm.src) ? _c('a', {
     attrs: {
-      "href": _vm._f("VID")(_vm.video.id)
+      "href": _vm._f("VID")(_vm.video.slug)
     }
   }, [_c('img', {
     attrs: {
@@ -42711,7 +42713,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     },
     on: {
       "click": function($event) {
-        _vm.remove(_vm.video.id)
+        _vm.remove(_vm.video.slug)
       }
     }
   }, [_c('span', {
@@ -42869,7 +42871,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-	props: ['data', 'image'],
+	props: ['post', 'image'],
 	data: function data() {
 		return {
 			images: JSON.parse(this.image)
@@ -42898,6 +42900,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 			for (var i = 0; i < files.length; i++) {
 				data.append('images[]', files[i]);
 			}
+
+			data.append('postId', this.post);
 
 			axios.post('/admin/images', data).then(function (r) {
 				e.target.value = '';
@@ -43102,11 +43106,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 	methods: {
 		onSubmit: function onSubmit(e) {
 			var data = new FormData(e.target);
-			axios.post('/admin/posts/' + this.post.id, data).then(function (r) {
+			axios.post('/admin/posts/' + this.post.slug, data).then(function (r) {
 				Bus.$emit('flash', {
 					message: r.data.message,
 					type: 'success'
 				});
+				location.reload();
 			}, function (r) {
 				Bus.$emit('flash', {
 					message: 'Failed!',

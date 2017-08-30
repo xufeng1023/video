@@ -23,7 +23,7 @@ class ImageTest extends TestCase
     function test_a_video_can_only_have_one_thumbnail()
     {
     	$video = $this->create('Video');
-    	$path = '/admin/videos/thumbnail/'.$video->id;
+    	$path = '/admin/videos/thumbnail/'.$video->slug;
     	$file1 = $this->file();
     	$file2 = $this->file();
     	$this->login()->post($path, ['image' => $file1]);

@@ -42,8 +42,9 @@ class AdminTest extends TestCase
     function test_admin_can_add_a_post()
     {
         $data = $this->raw('Post');
+        $slugWillBe = str_replace(' ', '-', strtolower($data['title']));
         $this->login()->post('/admin/posts', $data);
-        $this->assertDatabaseHas('posts', $data);
+        $this->assertDatabaseHas('posts', ['slug' => $slugWillBe, 'title' => $data['title']]);
     }
 
     function test_admin_can_delete_a_post()
@@ -53,7 +54,7 @@ class AdminTest extends TestCase
         $post = $this->create('Post');
         $this->login()->post('/admin/images', ['postId' => $post->id, 'images' => [$file]]);
         $this->post('/admin/videos', ['postId' => $post->id, 'video' => $file2, 'slug' => $post->title]);
-        $this->delete('/admin/posts/'.$post->id);
+        $this->delete('/admin/posts/'.$post->slug);
         $this->assertDatabaseMissing('posts', $post->toArray());
         $this->assertDatabaseMissing('images', ['slug' => 'upload/'.$file->hashName()]);
         $this->assertDatabaseMissing('videos', ['slug' => 'video/'.$file2->hashName()]);
@@ -65,8 +66,8 @@ class AdminTest extends TestCase
     {
         $post = $this->create('Post')->toArray();
         $post['title'] = 'New Title '.$post['title'];
-        $this->login()->put('/admin/posts/'.$post['id'], $post);
-        $this->assertDatabaseHas('posts', ['title' => $post['title']]);
+        $this->login()->put('/admin/posts/'.$post['slug'], $post);
+        $this->assertDatabaseHas('posts', ['slug' => 'new-title-'.$post['slug']]);
     }
 
     function test_admin_can_upload_images_to_a_post()
@@ -124,7 +125,7 @@ class AdminTest extends TestCase
     {
         $video = $this->create('Video');
         $file = $this->file();
-        $this->login()->post('/admin/videos/thumbnail/'.$video->id, ['image' => $file]);
+        $this->login()->post('/admin/videos/thumbnail/'.$video->slug, ['image' => $file]);
         $this->assertDatabaseHas('images', ['video_id' => $video->id, 'slug' => 'upload/'.$file->hashName()]);
         $this->fileExist($file->hashName());
     }
@@ -132,8 +133,9 @@ class AdminTest extends TestCase
     function test_admin_can_delete_a_video()
     {
         $this->test_admin_can_upload_a_video();
-        $this->delete('/admin/videos/1');
-        $this->assertDatabaseMissing('videos', ['id' => 1]);
+        $video = \App\Video::first();
+        $this->delete('/admin/videos/'.$video->slug);
+        $this->assertDatabaseMissing('videos', $video->toArray());
         $this->fileMissing($this->file->hashName(), 'video');
     }
 

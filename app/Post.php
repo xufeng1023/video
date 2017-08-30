@@ -6,7 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class Post extends Model
 {
-    protected $fillable = ['title', 'views'];
+    protected $fillable = ['title', 'slug', 'views'];
+
+    public function getRouteKeyName()
+    {
+        return 'slug';
+    }
 
     public function images()
     {
@@ -38,6 +43,6 @@ class Post extends Model
 
     public function videoSlug()
     {
-        return $this->title.' '.($this->videos()->count() + 1);
+        return $this->slug.'-'.($this->videos()->count() + 1);
     }
 }

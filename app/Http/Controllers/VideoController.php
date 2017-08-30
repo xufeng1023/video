@@ -39,7 +39,7 @@ class VideoController extends Controller
     public function store(Request $request)
     {
         $video = Video::create([
-            'post_id' => $this->postId($request),
+            'post_id' => $request->postId,
             'slug' => $request->slug,
             'link' => $request->video->store('video', 'public')
         ]);
