@@ -8354,3 +8354,13 @@ button.close {
   background-color: #3097D1;
 }
 
+#post-search-bar {
+  position: relative;
+}
+
+#post-search-bar .list-group {
+  z-index: 999;
+  position: absolute;
+  width: 100%;
+}
+

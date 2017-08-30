@@ -36,7 +36,7 @@
 							message: r.data.message,
 							type: 'success'
 						})
-						location.reload()
+						location.assign('/admin')
 					}, (r) => {
 						Bus.$emit('flash', {
 							message: 'Failed!',

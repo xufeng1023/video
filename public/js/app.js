@@ -941,6 +941,7 @@ Vue.component('videoOne', __webpack_require__(49));
 Vue.component('postTitleInput', __webpack_require__(9));
 Vue.component('imageInput', __webpack_require__(54));
 Vue.component('updatePostForm', __webpack_require__(57));
+Vue.component('searchPostBar', __webpack_require__(69));
 
 var app = new Vue({
   el: '#app'
@@ -42000,7 +42001,7 @@ if(false) {
 /* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(41)(undefined);
+exports = module.exports = __webpack_require__(72)(undefined);
 // imports
 
 
@@ -42011,88 +42012,7 @@ exports.push([module.i, "\n#flash {\n    position: fixed;\n    bottom: 1em;\n   
 
 
 /***/ }),
-/* 41 */
-/***/ (function(module, exports) {
-
-/*
-	MIT License http://www.opensource.org/licenses/mit-license.php
-	Author Tobias Koppers @sokra
-*/
-// css base code, injected by the css-loader
-module.exports = function(useSourceMap) {
-	var list = [];
-
-	// return the list of modules as css string
-	list.toString = function toString() {
-		return this.map(function (item) {
-			var content = cssWithMappingToString(item, useSourceMap);
-			if(item[2]) {
-				return "@media " + item[2] + "{" + content + "}";
-			} else {
-				return content;
-			}
-		}).join("");
-	};
-
-	// import a list of modules into the list
-	list.i = function(modules, mediaQuery) {
-		if(typeof modules === "string")
-			modules = [[null, modules, ""]];
-		var alreadyImportedModules = {};
-		for(var i = 0; i < this.length; i++) {
-			var id = this[i][0];
-			if(typeof id === "number")
-				alreadyImportedModules[id] = true;
-		}
-		for(i = 0; i < modules.length; i++) {
-			var item = modules[i];
-			// skip already imported module
-			// this implementation is not 100% perfect for weird media query combinations
-			//  when a module is imported multiple times with different media queries.
-			//  I hope this will never occur (Hey this way we have smaller bundles)
-			if(typeof item[0] !== "number" || !alreadyImportedModules[item[0]]) {
-				if(mediaQuery && !item[2]) {
-					item[2] = mediaQuery;
-				} else if(mediaQuery) {
-					item[2] = "(" + item[2] + ") and (" + mediaQuery + ")";
-				}
-				list.push(item);
-			}
-		}
-	};
-	return list;
-};
-
-function cssWithMappingToString(item, useSourceMap) {
-	var content = item[1] || '';
-	var cssMapping = item[3];
-	if (!cssMapping) {
-		return content;
-	}
-
-	if (useSourceMap && typeof btoa === 'function') {
-		var sourceMapping = toComment(cssMapping);
-		var sourceURLs = cssMapping.sources.map(function (source) {
-			return '/*# sourceURL=' + cssMapping.sourceRoot + source + ' */'
-		});
-
-		return [content].concat(sourceURLs).concat([sourceMapping]).join('\n');
-	}
-
-	return [content].join('\n');
-}
-
-// Adapted from convert-source-map (MIT)
-function toComment(sourceMap) {
-	// eslint-disable-next-line no-undef
-	var base64 = btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap))));
-	var data = 'sourceMappingURL=data:application/json;charset=utf-8;base64,' + base64;
-
-	return '/*# ' + data + ' */';
-}
-
-
-/***/ }),
+/* 41 */,
 /* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -42869,6 +42789,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
 	props: ['post', 'image'],
@@ -42881,6 +42803,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 	filters: {
 		SRC: function SRC(value) {
 			return '/storage/' + value;
+		},
+		LINK: function LINK(value) {
+			return '/admin/images/' + value.replace('upload/', '');
 		}
 	},
 	computed: {
@@ -42921,13 +42846,13 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 				});
 			});
 		},
-		thumb: function thumb(id) {
+		thumb: function thumb(slug) {
 			var _this2 = this;
 
-			axios.post('/admin/images/' + id, { _method: 'PUT' }).then(function (r) {
+			axios.post('/admin/images/' + slug.replace('upload/', ''), { _method: 'PUT' }).then(function (r) {
 				_this2.images.forEach(function (image) {
 					image.is_thumbnail = 0;
-					if (image.id == id) image.is_thumbnail = 1;
+					if (image.slug == slug) image.is_thumbnail = 1;
 				});
 
 				Bus.$emit('flash', {
@@ -42936,11 +42861,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 				});
 			});
 		},
-		remove: function remove(id) {
+		remove: function remove(slug) {
 			var _this3 = this;
 
-			axios.post('/admin/images/' + id, { _method: 'DELETE' }).then(function (r) {
-				_this3.removeImage(id);
+			axios.post('/admin/images/' + slug.replace('upload/', ''), { _method: 'DELETE' }).then(function (r) {
+				_this3.removeImage(slug);
 
 				Bus.$emit('flash', {
 					message: r.data.message,
@@ -42948,9 +42873,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 				});
 			});
 		},
-		removeImage: function removeImage(id) {
+		removeImage: function removeImage(slug) {
 			this.images = this.images.filter(function (image) {
-				return image.id != id;
+				return image.slug != slug;
 			});
 		}
 	}
@@ -42984,19 +42909,23 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
         class: {
           'is-thumbnail': slug.is_thumbnail
         }
+      }, [_c('a', {
+        attrs: {
+          "href": _vm._f("LINK")(slug.slug)
+        }
       }, [_c('img', {
         attrs: {
           "src": _vm._f("SRC")(slug.slug),
           "width": "100%"
         }
-      }), _vm._v(" "), _c('button', {
+      })]), _vm._v(" "), _c('button', {
         staticClass: "btn btn-success btn-xs",
         attrs: {
           "type": "button"
         },
         on: {
           "click": function($event) {
-            _vm.thumb(slug.id)
+            _vm.thumb(slug.slug)
           }
         }
       }, [_c('span', {
@@ -43008,7 +42937,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
         },
         on: {
           "click": function($event) {
-            _vm.remove(slug.id)
+            _vm.remove(slug.slug)
           }
         }
       }, [_c('span', {
@@ -43111,7 +43040,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 					message: r.data.message,
 					type: 'success'
 				});
-				location.reload();
+				location.assign('/admin');
 			}, function (r) {
 				Bus.$emit('flash', {
 					message: 'Failed!',
@@ -43180,6 +43109,233 @@ if (false) {
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 61 */,
+/* 62 */,
+/* 63 */,
+/* 64 */,
+/* 65 */,
+/* 66 */,
+/* 67 */,
+/* 68 */,
+/* 69 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var Component = __webpack_require__(1)(
+  /* script */
+  __webpack_require__(70),
+  /* template */
+  __webpack_require__(71),
+  /* styles */
+  null,
+  /* scopeId */
+  null,
+  /* moduleIdentifier (server only) */
+  null
+)
+Component.options.__file = "C:\\Users\\xu feng\\Desktop\\video\\resources\\assets\\js\\components\\SearchPostBar.vue"
+if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key.substr(0, 2) !== "__"})) {console.error("named exports are not supported in *.vue files.")}
+if (Component.options.functional) {console.error("[vue-loader] SearchPostBar.vue: functional components are not supported with templates, they should use render functions.")}
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-016258f8", Component.options)
+  } else {
+    hotAPI.reload("data-v-016258f8", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 70 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+	data: function data() {
+		return {
+			posts: []
+		};
+	},
+
+	filters: {
+		LINK: function LINK(value) {
+			return '/admin/posts/' + value + '/edit';
+		}
+	},
+	methods: {
+		search: _.debounce(function (e) {
+			var _this = this;
+
+			var query = e.target.value.trim();
+			if (!query) {
+				this.posts = [];
+				return;
+			}
+
+			axios.get('/admin/posts/search?q=' + query).then(function (r) {
+				_this.posts = r.data;
+			});
+		}, 500)
+	}
+});
+
+/***/ }),
+/* 71 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', {
+    staticClass: "form-group",
+    attrs: {
+      "id": "post-search-bar"
+    }
+  }, [_c('div', {
+    staticClass: "input-group"
+  }, [_c('input', {
+    staticClass: "form-control",
+    attrs: {
+      "type": "text"
+    },
+    on: {
+      "keyup": _vm.search
+    }
+  }), _vm._v(" "), _vm._m(0)]), _vm._v(" "), (_vm.posts) ? _c('div', {
+    staticClass: "list-group"
+  }, _vm._l((_vm.posts), function(post) {
+    return _c('a', {
+      staticClass: "list-group-item",
+      attrs: {
+        "href": _vm._f("LINK")(post.slug)
+      }
+    }, [_vm._v("\n\t\t\t" + _vm._s(post.title) + "\n\t\t")])
+  })) : _vm._e()])
+},staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('span', {
+    staticClass: "input-group-addon"
+  }, [_c('span', {
+    staticClass: "glyphicon glyphicon-search"
+  })])
+}]}
+module.exports.render._withStripped = true
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+     require("vue-hot-reload-api").rerender("data-v-016258f8", module.exports)
+  }
+}
+
+/***/ }),
+/* 72 */
+/***/ (function(module, exports) {
+
+/*
+	MIT License http://www.opensource.org/licenses/mit-license.php
+	Author Tobias Koppers @sokra
+*/
+// css base code, injected by the css-loader
+module.exports = function(useSourceMap) {
+	var list = [];
+
+	// return the list of modules as css string
+	list.toString = function toString() {
+		return this.map(function (item) {
+			var content = cssWithMappingToString(item, useSourceMap);
+			if(item[2]) {
+				return "@media " + item[2] + "{" + content + "}";
+			} else {
+				return content;
+			}
+		}).join("");
+	};
+
+	// import a list of modules into the list
+	list.i = function(modules, mediaQuery) {
+		if(typeof modules === "string")
+			modules = [[null, modules, ""]];
+		var alreadyImportedModules = {};
+		for(var i = 0; i < this.length; i++) {
+			var id = this[i][0];
+			if(typeof id === "number")
+				alreadyImportedModules[id] = true;
+		}
+		for(i = 0; i < modules.length; i++) {
+			var item = modules[i];
+			// skip already imported module
+			// this implementation is not 100% perfect for weird media query combinations
+			//  when a module is imported multiple times with different media queries.
+			//  I hope this will never occur (Hey this way we have smaller bundles)
+			if(typeof item[0] !== "number" || !alreadyImportedModules[item[0]]) {
+				if(mediaQuery && !item[2]) {
+					item[2] = mediaQuery;
+				} else if(mediaQuery) {
+					item[2] = "(" + item[2] + ") and (" + mediaQuery + ")";
+				}
+				list.push(item);
+			}
+		}
+	};
+	return list;
+};
+
+function cssWithMappingToString(item, useSourceMap) {
+	var content = item[1] || '';
+	var cssMapping = item[3];
+	if (!cssMapping) {
+		return content;
+	}
+
+	if (useSourceMap && typeof btoa === 'function') {
+		var sourceMapping = toComment(cssMapping);
+		var sourceURLs = cssMapping.sources.map(function (source) {
+			return '/*# sourceURL=' + cssMapping.sourceRoot + source + ' */'
+		});
+
+		return [content].concat(sourceURLs).concat([sourceMapping]).join('\n');
+	}
+
+	return [content].join('\n');
+}
+
+// Adapted from convert-source-map (MIT)
+function toComment(sourceMap) {
+	// eslint-disable-next-line no-undef
+	var base64 = btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap))));
+	var data = 'sourceMappingURL=data:application/json;charset=utf-8;base64,' + base64;
+
+	return '/*# ' + data + ' */';
+}
+
 
 /***/ })
 /******/ ]);

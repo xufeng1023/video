@@ -7,11 +7,13 @@
 	    <div class="row" v-for="pic in computedImages">
             <div class="col-sm-3" v-for="slug in pic">
                 <div class="thumbnail" :class="{'is-thumbnail':slug.is_thumbnail}">
-                    <img :src="slug.slug | SRC" width="100%">
-                    <button type="button" class="btn btn-success btn-xs" @click="thumb(slug.id)">
+                	<a :href="slug.slug | LINK">
+                		<img :src="slug.slug | SRC" width="100%">
+                	</a>
+                    <button type="button" class="btn btn-success btn-xs" @click="thumb(slug.slug)">
                     	<span class="glyphicon glyphicon-thumbs-up"></span>
                     </button>
-                    <button type="button" class="btn btn-danger btn-xs" @click="remove(slug.id)">
+                    <button type="button" class="btn btn-danger btn-xs" @click="remove(slug.slug)">
                     	<span class="glyphicon glyphicon-trash"></span>
                     </button>
                 </div>
@@ -31,6 +33,9 @@
 		filters: {
 			SRC: function(value) {
 				return '/storage/' + value
+			},
+			LINK: function(value) {
+				return '/admin/images/' + value.replace('upload/', '')
 			}
 		},
 		computed: {
@@ -68,12 +73,12 @@
 						})
 					})
 			},
-			thumb(id) {
-				axios.post('/admin/images/'+id, {_method: 'PUT'})
+			thumb(slug) {
+				axios.post('/admin/images/'+slug.replace('upload/', ''), {_method: 'PUT'})
 					.then(r => {
 						this.images.forEach(image => {
 							image.is_thumbnail = 0
-							if(image.id == id) image.is_thumbnail = 1
+							if(image.slug == slug) image.is_thumbnail = 1
 						})
 
 						Bus.$emit('flash', {
@@ -82,10 +87,10 @@
 						})
 					})
 			},
-			remove(id) {
-				axios.post('/admin/images/'+id, {_method: 'DELETE'})
+			remove(slug) {
+				axios.post('/admin/images/'+slug.replace('upload/', ''), {_method: 'DELETE'})
 					.then(r => {
-						this.removeImage(id)
+						this.removeImage(slug)
 
 						Bus.$emit('flash', {
 							message: r.data.message,
@@ -93,9 +98,9 @@
 						})
 					})
 			},
-			removeImage(id) {
+			removeImage(slug) {
 				this.images = this.images.filter(image => {
-					return image.id != id
+					return image.slug != slug
 				})
 			}
 		}

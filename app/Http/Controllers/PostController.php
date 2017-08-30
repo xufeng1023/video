@@ -90,6 +90,11 @@ class PostController extends Controller
         return redirect('/admin');
     }
 
+    public function search(Request $request)
+    {
+        return Post::where('title', 'LIKE', "%{$request->q}%")->get()->toJson();
+    }
+
     private function generateSlug($title)
     {
         return str_replace(' ', '-', strtolower($title));

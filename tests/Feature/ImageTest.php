@@ -14,8 +14,8 @@ class ImageTest extends TestCase
     function test_a_post_can_only_have_one_thumbnail()
     {
     	$image1 = $this->create('Image', ['is_thumbnail' => 1]);
-    	$image2 = $this->create('Image', ['post_id' => $image1->post->id]);
-    	$this->login()->put('/admin/images/'.$image2->id);
+    	$image2 = $this->create('Image', ['post_id' => $image1->post->id, 'slug' => 'upload/1.jpg']);
+    	$this->login()->put('/admin/images/1.jpg');
     	$this->assertDatabaseHas('images', ['id' => $image1->id, 'is_thumbnail' => 0]);
     	$this->assertDatabaseHas('images', ['id' => $image2->id, 'is_thumbnail' => 1]);
     }

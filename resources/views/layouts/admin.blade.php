@@ -26,8 +26,6 @@
                 <div class="collapse navbar-collapse" id="app-navbar-collapse">
                     <ul class="nav navbar-nav">
                         <li><a href="/admin">Posts</a></li>
-                        <li><a href="">Videos</a></li>
-                        <li><a href="">Images</a></li>
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
                         <li><a href="/admin">{{ Auth::user()->name }}</a></li>

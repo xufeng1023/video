@@ -9,6 +9,11 @@ class Image extends Model
 {
     protected $fillable = ['post_id', 'video_id', 'slug'];
 
+    public function getRouteKeyName()
+    {
+        return 'slug';
+    }
+
     public function post()
     {
     	return $this->belongsTo(Post::class);

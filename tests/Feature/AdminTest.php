@@ -73,37 +73,35 @@ class AdminTest extends TestCase
     function test_admin_can_upload_images_to_a_post()
     {
         $post = $this->create('Post');
-        $image = $this->file();
+
         $data = [
             'postId' => $post->id,
-            'images' => [$image]
+            'images' => [$this->file]
         ];
         
         $this->login()->post('/admin/images', $data);
-        $this->assertDatabaseHas('images', ['post_id' => $post->id, 'slug' => 'upload/'.$image->hashName()]);
-        $this->fileExist($image->hashName());
+        $this->assertDatabaseHas('images', ['post_id' => $post->id, 'slug' => 'upload/'.$this->file->hashName()]);
+        $this->fileExist($this->file->hashName());
     }
 
     function test_admin_can_delete_an_image_of_a_post()
     {
-        $image = $this->file();
-
         $data = [
             'postId' => $this->create('Post')->id,
-            'images' => [$image]
+            'images' => [$this->file]
         ];
         
         $response = $this->login()->post('/admin/images', $data);
-        $insertedImage = $response->original['slugs'][0]; // 'slugs' is a json returned from that controller method
-        $this->delete('/admin/images/'.$insertedImage['id']);
-        $this->assertDatabaseMissing('images', $insertedImage);
-        $this->fileMissing($image->hashName());
+        $image = \App\Image::first();
+        $this->delete('/admin/images/'.$this->file->hashName());
+        $this->assertDatabaseMissing('images', $image->toArray());
+        $this->fileMissing($this->file->hashName());
     }
 
     function test_admin_can_set_an_image_as_thumbnail()
     {
-        $image = $this->create('Image');
-        $this->login()->put('/admin/images/'.$image->id);
+        $image = $this->create('Image', ['slug' => 'upload/1.jpg']);
+        $this->login()->put('/admin/images/1.jpg');
         $this->assertDatabaseHas('images', ['id' => $image->id, 'is_thumbnail' => 1]);
     }
 
@@ -144,5 +142,21 @@ class AdminTest extends TestCase
         $this->test_admin_can_upload_a_video();
         $video = \App\Video::first();
         $this->get('/admin/videos/'.$video->slug)->assertSee($video->link);
+    }
+
+    function test_admin_can_view_an_image()
+    {
+        $this->test_admin_can_upload_images_to_a_post();
+        $image = \App\Image::first();
+        $this->get('/admin/images/'.$this->file->hashName())->assertSee($image->slug);
+    }
+
+    function test_admin_can_search_posts()
+    {
+        $post1 = $this->create('Post', ['title' => 'A Test Post']);
+        $post2 = $this->create('Post', ['title' => 'A second Post']);
+        $this->login()->get('/admin/posts/search?q=est p')
+            ->assertJson([$post1->toArray()])
+            ->assertDontSee($post2->title);
     }
 }
