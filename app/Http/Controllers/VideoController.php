@@ -55,7 +55,7 @@ class VideoController extends Controller
      */
     public function show(Video $video)
     {
-
+        return view('admin.video', compact('video'));
     }
 
     /**
@@ -95,7 +95,7 @@ class VideoController extends Controller
      */
     public function destroy(Video $video)
     {
-
+        $video->deleteThumbnail()->deleteFiles()->delete();
     }
 
     public function thumbnail(Request $request, Video $video)

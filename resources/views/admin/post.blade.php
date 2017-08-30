@@ -20,6 +20,8 @@
                             @endforeach
                         </div>
                     @endforeach
+                    <hr>
+                    @include('admin.deletePostBtn')
                 </div>
             </div>
         </div>

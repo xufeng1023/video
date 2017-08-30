@@ -9,6 +9,11 @@ class Video extends Model
 {
     protected $fillable = ['post_id', 'slug', 'link'];
 
+    public function getRouteKeyName()
+    {
+        return 'slug';
+    }
+
     public function thumbnail()
     {
     	return $this->hasOne(Image::class);

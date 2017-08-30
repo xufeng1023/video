@@ -12,6 +12,14 @@ class AdminTest extends TestCase
 {
     use DatabaseMigrations;
 
+    private $file;
+
+    function setUp()
+    {
+        parent::setUp();
+        $this->file = $this->file();
+    }
+
     function test_guests_can_not_access_admin_directory()
     {
         $this->get('/admin')->assertRedirect('/login');
@@ -101,13 +109,15 @@ class AdminTest extends TestCase
     function test_admin_can_upload_a_video()
     {
         $post = $this->create('Post');
-        $file = $this->file();
+        
         $this->login()->post('/admin/videos', [
             'postId' => $post->id,
             'slug' => $post->title,
-            'video' => $file
+            'video' => $this->file
         ]);
-        $this->assertDatabaseHas('videos', ['post_id' => $post->id, 'link' => 'video/'.$file->hashName()]);
+
+        $this->assertDatabaseHas('videos', ['post_id' => $post->id, 'link' => 'video/'.$this->file->hashName()]);
+        $this->fileExist($this->file->hashName(), 'video');
     }
 
     function test_admin_can_set_a_thumbnail_for_a_video()
@@ -117,5 +127,20 @@ class AdminTest extends TestCase
         $this->login()->post('/admin/videos/thumbnail/'.$video->id, ['image' => $file]);
         $this->assertDatabaseHas('images', ['video_id' => $video->id, 'slug' => 'upload/'.$file->hashName()]);
         $this->fileExist($file->hashName());
+    }
+
+    function test_admin_can_delete_a_video()
+    {
+        $this->test_admin_can_upload_a_video();
+        $this->delete('/admin/videos/1');
+        $this->assertDatabaseMissing('videos', ['id' => 1]);
+        $this->fileMissing($this->file->hashName(), 'video');
+    }
+
+    function test_admin_can_view_a_video()
+    {
+        $this->test_admin_can_upload_a_video();
+        $video = \App\Video::first();
+        $this->get('/admin/videos/'.$video->slug)->assertSee($video->link);
     }
 }

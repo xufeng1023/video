@@ -5,7 +5,7 @@
 	        <input type="file" name="screenshots[]" accept="image/*" multiple @change="onChange">
 	    </div>
 	    <div class="row" v-for="pic in computedImages">
-            <div class="col-sm-4" v-for="slug in pic">
+            <div class="col-sm-3" v-for="slug in pic">
                 <div class="thumbnail" :class="{'is-thumbnail':slug.is_thumbnail}">
                     <img :src="slug.slug | SRC" width="100%">
                     <button type="button" class="btn btn-success btn-xs" @click="thumb(slug.id)">
@@ -51,6 +51,8 @@
 
 				axios.post('/admin/images', data)
 					.then((r) => {
+						e.target.value = ''
+
 						r.data.slugs.forEach(element => this.images.push(element))
 
 						Bus.$emit('flash', {

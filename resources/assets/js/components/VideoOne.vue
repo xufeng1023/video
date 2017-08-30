@@ -1,11 +1,16 @@
 <template>
 	<div class="thumbnail">
-		<img :src="src | IMG" v-if="src">
+		<a :href="video.id | VID" v-if="src">
+			<img :src="src | IMG">
+		</a>
 		<div class="caption">
-			<h4 v-text="video.slug"></h4>
+			<h6 v-text="video.slug"></h6>
 			<p>
 				<input type="file" accept="image/*" @change="onChange">
 			</p>
+			<button type="button" class="btn btn-danger btn-xs" @click="remove(video.id)">
+				<span class="glyphicon glyphicon-trash"></span>
+			</button>
 		</div>
 	</div>
 </template>
@@ -26,9 +31,18 @@
 		filters: {
 			IMG(value) {
 				return '/storage/' + value
+			},
+			VID(value) {
+				return '/admin/videos/' + value
 			}
 		},
 		methods: {
+			remove(id) {
+				axios.post('/admin/videos/'+id, {'_method': 'DELETE'})
+				.then(() => {
+					location.reload()
+				})
+			},
 			onChange(e) {
 				let fm = new FormData
 				fm.append('image', e.target.files[0])
