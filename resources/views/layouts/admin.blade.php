@@ -7,7 +7,8 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="robots" content="noindex">
     <title>Admin</title>
-    <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link href="{{ asset('css/back.css') }}" rel="stylesheet">
 </head>
 <body>
     <div id="app">
@@ -41,12 +42,13 @@
                             </form>
                         </li>
                     </ul>
+                    <search-post-bar></search-post-bar>
                 </div>
             </div>
         </nav>
         @yield('content')
         <flash></flash>
     </div>
-    <script src="{{ asset('js/app.js') }}"></script>
+    <script src="{{ asset('js/back.js') }}"></script>
 </body>
 </html>

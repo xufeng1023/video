@@ -3,7 +3,7 @@
 @section('content')
 <div class="container">
     <div class="row">
-            <div class="col-sm-12">
+        <div class="col-sm-12">
             <div class="well">
                 @include('error')
                 <form action="/admin/posts" method="POST">
@@ -16,7 +16,6 @@
                     </div>
                 </form>
             </div>
-            <search-post-bar></search-post-bar>
             <div class="table-responsive">
                 <table class="table table-hover">
                     <thead>

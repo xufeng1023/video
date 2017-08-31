@@ -1,5 +1,5 @@
 <template>
-	<div id="post-search-bar" class="form-group">
+	<form id="post-search-bar" class="navbar-form navbar-right">
 		<div class="input-group">
 			<input type="text" class="form-control" @keyup="search">
 			<span class="input-group-addon">
@@ -11,7 +11,7 @@
 				{{ post.title }}
 			</a>
 		</div>
-	</div>
+	</form>
 </template>
 
 <script>
