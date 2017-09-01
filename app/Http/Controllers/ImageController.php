@@ -58,6 +58,7 @@ class ImageController extends Controller
      */
     public function show(Image $image)
     {
+        $image->load('post');
         return view('admin.image', compact('image'));
     }
 

@@ -44,14 +44,4 @@ class ImageTest extends TestCase
     	$this->fileExist($file2->hashName());
     	$this->fileMissing($file1->hashName());
     }
-
-    function test_delete()
-    {
-        $post = $this->create('Post');
-
-        $image = $this->create('Image', [
-            'post_id' => $post->id
-        ]);
-        //$this->deleteUselessFile($image->slug);
-    }
 }

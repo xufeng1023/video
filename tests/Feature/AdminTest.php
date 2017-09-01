@@ -12,14 +12,6 @@ class AdminTest extends TestCase
 {
     use DatabaseMigrations;
 
-    private $file;
-
-    function setUp()
-    {
-        parent::setUp();
-        $this->file = $this->file();
-    }
-
     function test_guests_can_not_access_admin_directory()
     {
         $this->expectException('Illuminate\Auth\AuthenticationException');
@@ -50,17 +42,17 @@ class AdminTest extends TestCase
 
     function test_admin_can_delete_a_post()
     {
-        $file = $this->file();
-        $file2 = $this->file();
-        $post = $this->create('Post');
-        $this->login()->post('/admin/images', ['postId' => $post->id, 'images' => [$file]]);
-        $this->post('/admin/videos', ['postId' => $post->id, 'video' => $file2, 'slug' => $post->title]);
-        $this->delete('/admin/posts/'.$post->slug);
-        $this->assertDatabaseMissing('posts', $post->toArray());
-        $this->assertDatabaseMissing('images', ['slug' => 'upload/'.$file->hashName()]);
-        $this->assertDatabaseMissing('videos', ['slug' => 'video/'.$file2->hashName()]);
-        $this->fileMissing($file->hashName());
-        $this->fileMissing($file2->hashName(), 'video');
+        $video = $this->create('Video');
+        $postImage = $this->create('Image', ['post_id' => $video->post->id]);
+        $videoThumbnail = $this->create('Image', ['video_id' => $video->id]);
+        $this->login()->delete('/admin/posts/'.$video->post->slug);
+        $this->assertDatabaseMissing('posts', $video->post->toArray());
+        $this->assertDatabaseMissing('images', ['slug' => $postImage->slug]);
+        $this->assertDatabaseMissing('images', ['slug' => $videoThumbnail->slug]);
+        $this->assertDatabaseMissing('videos', ['slug' => $video->slug]);
+        $this->fileMissing($postImage->slug);
+        $this->fileMissing($videoThumbnail->slug);
+        $this->fileMissing($video->link);
     }
 
     function test_admin_can_update_a_post()
@@ -75,28 +67,23 @@ class AdminTest extends TestCase
     {
         $post = $this->create('Post');
 
-        $data = [
+        $file = $this->file();
+
+        $this->login()->post('/admin/images', [
             'postId' => $post->id,
-            'images' => [$this->file]
-        ];
-        
-        $this->login()->post('/admin/images', $data);
-        $this->assertDatabaseHas('images', ['post_id' => $post->id, 'slug' => 'upload/'.$this->file->hashName()]);
-        $this->fileExist($this->file->hashName());
+            'images' => [$file]
+        ]);
+
+        $this->assertDatabaseHas('images', ['post_id' => $post->id, 'slug' => 'upload/'.$file->hashName()]);
+        $this->fileExist($file->hashName());
     }
 
     function test_admin_can_delete_an_image_of_a_post()
     {
-        $data = [
-            'postId' => $this->create('Post')->id,
-            'images' => [$this->file]
-        ];
-        
-        $response = $this->login()->post('/admin/images', $data);
-        $image = \App\Image::first();
-        $this->delete('/admin/images/'.$this->file->hashName());
+        $image = $this->create('Image', ['post_id' => $this->create('Post')->id]);
+        $this->login()->delete('/admin/images/'.explode('/', $image->slug)[1]);
         $this->assertDatabaseMissing('images', $image->toArray());
-        $this->fileMissing($this->file->hashName());
+        $this->fileMissing($image->slug);
     }
 
     function test_admin_can_choose_an_image_as_thumbnail()
@@ -115,15 +102,17 @@ class AdminTest extends TestCase
     function test_admin_can_upload_a_video()
     {
         $post = $this->create('Post');
+
+        $file = $this->file();
         
         $this->login()->post('/admin/videos', [
             'postId' => $post->id,
             'slug' => $post->title,
-            'video' => $this->file
+            'video' => $file
         ]);
 
-        $this->assertDatabaseHas('videos', ['post_id' => $post->id, 'link' => 'video/'.$this->file->hashName()]);
-        $this->fileExist($this->file->hashName(), 'video');
+        $this->assertDatabaseHas('videos', ['post_id' => $post->id, 'link' => 'video/'.$file->hashName()]);
+        $this->fileExist($file->hashName(), 'video');
     }
 
     function test_admin_can_set_a_thumbnail_for_a_video()
@@ -138,25 +127,28 @@ class AdminTest extends TestCase
 
     function test_admin_can_delete_a_video()
     {
-        $this->test_admin_can_upload_a_video();
-        $video = \App\Video::first();
-        $this->delete('/admin/videos/'.$video->slug);
+        $video = $this->create('Video');
+        $thumbnail = $this->create('Image', ['video_id' => $video->id]);
+        $this->login()->delete('/admin/videos/'.$video->slug);
         $this->assertDatabaseMissing('videos', $video->toArray());
-        $this->fileMissing($this->file->hashName(), 'video');
+        $this->fileMissing($video->link);
+        $this->fileMissing($thumbnail->slug);
     }
 
     function test_admin_can_view_a_video()
     {
-        $this->test_admin_can_upload_a_video();
-        $video = \App\Video::first();
-        $this->get('/admin/videos/'.$video->slug)->assertSee($video->link);
+        $video = $this->create('Video');
+        $this->login()->get('/admin/videos/'.$video->slug)->assertSee($video->link);
+        $this->deleteUselessFile($video->link);
     }
 
     function test_admin_can_view_an_image()
     {
-        $this->test_admin_can_upload_images_to_a_post();
-        $image = \App\Image::first();
-        $this->get('/admin/images/'.$this->file->hashName())->assertSee($image->slug);
+        $image = $this->create('Image', ['post_id' => $this->create('Post')->id]);
+        
+        $this->login()->get('/admin/images/'.explode('/', $image->slug)[1])->assertSee($image->slug);
+
+        $this->deleteUselessFile($image->slug);
     }
 
     function test_admin_can_search_posts()
@@ -176,5 +168,7 @@ class AdminTest extends TestCase
         $this->login()->put('/admin/videos/'.$video1->slug.'/preview');
         $this->assertDatabaseHas('Videos', ['id' => $video1->id, 'is_free' => 1]);
         $this->assertDatabaseMissing('Videos', ['id' => $video2->id, 'is_free' => 1]);
+        $this->deleteUselessFile($video1->link);
+        $this->deleteUselessFile($video2->link);
     }
 }

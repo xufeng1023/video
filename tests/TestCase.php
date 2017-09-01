@@ -43,9 +43,9 @@ abstract class TestCase extends BaseTestCase
         return Storage::disk('public')->assertExists($folder.'/'.$slug);
     }
 
-    protected function fileMissing($slug, $folder = 'upload')
+    protected function fileMissing($slug)
     {
-        return Storage::disk('public')->assertMissing($folder.'/'.$slug);
+        return Storage::disk('public')->assertMissing($slug);
     }
 
     protected function deleteUselessFile($link, $disk = 'public')
