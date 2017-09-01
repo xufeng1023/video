@@ -42626,18 +42626,25 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
 	props: ['video'],
 	data: function data() {
 		return {
-			src: ''
+			src: '',
+			active: this.video.is_free
 		};
 	},
 	created: function created() {
 		if (this.video.thumbnail) {
 			this.src = this.video.thumbnail.slug;
 		}
+		Bus.$on('previewChanged', function (data) {
+			this.active = data.slug == this.video.slug ? 1 : 0;
+		}.bind(this));
 	},
 
 	filters: {
@@ -42649,6 +42656,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 		}
 	},
 	methods: {
+		preview: function preview(slug) {
+			axios.post('/admin/videos/' + slug + '/preview', { '_method': 'PUT' }).then(function () {
+				Bus.$emit('previewChanged', { 'slug': slug });
+			});
+		},
 		remove: function remove(slug) {
 			axios.post('/admin/videos/' + slug, { '_method': 'DELETE' }).then(function () {
 				location.reload();
@@ -42673,7 +42685,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
   return _c('div', {
-    staticClass: "thumbnail"
+    staticClass: "thumbnail",
+    class: {
+      'is-thumbnail': _vm.active
+    }
   }, [(_vm.src) ? _c('a', {
     attrs: {
       "href": _vm._f("VID")(_vm.video.slug)
@@ -42708,6 +42723,18 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }
   }, [_c('span', {
     staticClass: "glyphicon glyphicon-trash"
+  })]), _vm._v(" "), _c('button', {
+    staticClass: "btn btn-success btn-xs",
+    attrs: {
+      "type": "button"
+    },
+    on: {
+      "click": function($event) {
+        _vm.preview(_vm.video.slug)
+      }
+    }
+  }, [_c('span', {
+    staticClass: "glyphicon glyphicon-thumbs-up"
   })])])])
 },staticRenderFns: []}
 module.exports.render._withStripped = true
