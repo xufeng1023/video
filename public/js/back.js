@@ -43101,24 +43101,30 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 		};
 	},
 
-	components: { 'title-input': __WEBPACK_IMPORTED_MODULE_0__PostTitleInput_vue___default.a },
-	methods: {
-		onSubmit: function onSubmit(e) {
-			var data = new FormData(e.target);
-			axios.post('/admin/posts/' + this.post.slug, data).then(function (r) {
-				Bus.$emit('flash', {
-					message: r.data.message,
-					type: 'success'
-				});
-				location.assign('/admin');
-			}, function (r) {
-				Bus.$emit('flash', {
-					message: 'Failed!',
-					type: 'danger'
-				});
-			});
+	filters: {
+		action: function action(value) {
+			return '/admin/posts/' + value;
 		}
-	}
+	},
+	components: { 'title-input': __WEBPACK_IMPORTED_MODULE_0__PostTitleInput_vue___default.a }
+	// methods: {
+	// 	onSubmit(e) {
+	// 		let data = new FormData(e.target)
+	// 		axios.post('/admin/posts/'+this.post.slug, data)
+	// 			.then((r) => {
+	// 				Bus.$emit('flash', {
+	// 					message: r.data.message,
+	// 					type: 'success'
+	// 				})
+	// 				location.assign('/admin')
+	// 			}, (r) => {
+	// 				Bus.$emit('flash', {
+	// 					message: 'Failed!',
+	// 					type: 'danger'
+	// 				})
+	// 			})
+	// 	}
+	// }
 });
 
 /***/ }),
@@ -43128,14 +43134,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
   return _c('form', {
     attrs: {
-      "action": "",
+      "action": _vm._f("action")(_vm.post.slug),
       "method": "POST"
-    },
-    on: {
-      "submit": function($event) {
-        $event.preventDefault();
-        _vm.onSubmit($event)
-      }
     }
   }, [_c('input', {
     attrs: {

@@ -11,6 +11,12 @@ class PostTest extends TestCase
 {
 	use DatabaseMigrations;
 
+    function test_guest_can_see_posts_at_front_page()
+    {
+        $post = $this->create('Post');
+        $this->get('/')->assertSee($post->title);
+    }
+
     function test_post_title_must_be_unique()
     {
     	$post = $this->create('Post');

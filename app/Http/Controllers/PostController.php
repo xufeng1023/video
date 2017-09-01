@@ -69,12 +69,16 @@ class PostController extends Controller
      */
     public function update(Request $request, Post $post)
     {
+        $this->validate($request, [
+            'title' => 'required|unique:posts'
+        ]);
+        
         $post->update([
             'title' => $request->title,
             'slug' => $this->generateSlug($request->title)
         ]);
 
-        return ['message' => 'Updated!'];
+        return redirect('/admin/posts/'.$post->slug.'/edit');
     }
 
     /**

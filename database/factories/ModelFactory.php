@@ -15,23 +15,25 @@ $factory->define(App\User::class, function (Faker\Generator $faker) {
 $factory->define(App\Post::class, function (Faker\Generator $faker) {
     $title = $faker->sentence;
     return [
-        'title' => $title,
+        'title' => ucwords($title),
         'slug' => str_replace(' ', '-', strtolower($title))
     ];
 });
 
 $factory->define(App\Video::class, function (Faker\Generator $faker) {
+    static $post_id;
+    echo $post_id; 
+    exit;
+     $post = factory('App\Post')->create();
     return [
-        'post_id' => factory('App\Post')->create()->id,
-        'slug' => $faker->word,
-        'link' => $faker->sentence,
+        'post_id' => 1,
+        'slug' => str_random(10),
+        'link' => 'video/'.$faker->image(storage_path('app/public/video'),'640','480',null,false),
     ];
 });
 
 $factory->define(App\Image::class, function (Faker\Generator $faker) {
     return [
-        'post_id' => factory('App\Post')->create()->id,
-        'video_id' => factory('App\Video')->create()->id,
-        'slug' => $faker->word,
+        'slug' => 'upload/'.$faker->image(storage_path('app/public/upload'),'640','480',null,false),
     ];
 });

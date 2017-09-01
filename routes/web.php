@@ -1,8 +1,6 @@
 <?php
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', 'Front\PostController@index');
 
 Route::prefix('admin')->middleware(['auth','admin'])->group(function() {
 	Route::get('/', 'PostController@index');
