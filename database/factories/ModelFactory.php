@@ -3,7 +3,6 @@
 /** @var \Illuminate\Database\Eloquent\Factory $factory */
 $factory->define(App\User::class, function (Faker\Generator $faker) {
     static $password;
-
     return [
         'name' => $faker->name,
         'email' => $faker->unique()->safeEmail,
@@ -21,13 +20,10 @@ $factory->define(App\Post::class, function (Faker\Generator $faker) {
 });
 
 $factory->define(App\Video::class, function (Faker\Generator $faker) {
-    static $post_id;
-    echo $post_id; 
-    exit;
-     $post = factory('App\Post')->create();
+    $post = factory('App\Post')->create();
     return [
-        'post_id' => 1,
-        'slug' => str_random(10),
+        'post_id' => $post->id,
+        'slug' => $post->slug.'-1',
         'link' => 'video/'.$faker->image(storage_path('app/public/video'),'640','480',null,false),
     ];
 });

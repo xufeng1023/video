@@ -22,6 +22,7 @@ class AdminTest extends TestCase
 
     function test_guests_can_not_access_admin_directory()
     {
+        $this->expectException('Illuminate\Auth\AuthenticationException');
         $this->get('/admin')->assertRedirect('/login');
     }
 
@@ -98,10 +99,16 @@ class AdminTest extends TestCase
         $this->fileMissing($this->file->hashName());
     }
 
-    function test_admin_can_set_an_image_as_thumbnail()
+    function test_admin_can_choose_an_image_as_thumbnail()
     {
-        $image = $this->create('Image', ['slug' => 'upload/1.jpg']);
-        $this->login()->put('/admin/images/1.jpg');
+        $post = $this->create('Post');
+
+        $image = $this->create('Image', [
+            'post_id' => $post->id
+        ]);
+        $this->deleteUselessFile($image->slug);
+
+        $this->login()->put('/admin/images/'.explode('/', $image->slug)[1]);
         $this->assertDatabaseHas('images', ['id' => $image->id, 'is_thumbnail' => 1]);
     }
 
@@ -122,6 +129,7 @@ class AdminTest extends TestCase
     function test_admin_can_set_a_thumbnail_for_a_video()
     {
         $video = $this->create('Video');
+        $this->deleteUselessFile($video->link);
         $file = $this->file();
         $this->login()->post('/admin/videos/thumbnail/'.$video->slug, ['image' => $file]);
         $this->assertDatabaseHas('images', ['video_id' => $video->id, 'slug' => 'upload/'.$file->hashName()]);

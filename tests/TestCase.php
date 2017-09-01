@@ -48,6 +48,11 @@ abstract class TestCase extends BaseTestCase
         return Storage::disk('public')->assertMissing($folder.'/'.$slug);
     }
 
+    protected function deleteUselessFile($link, $disk = 'public')
+    {
+        Storage::disk($disk)->delete($link);
+    }
+
     protected function admin()
     {
     	return $this->create('User', ['is_admin' => 1]);
