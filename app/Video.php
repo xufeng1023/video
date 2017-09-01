@@ -19,6 +19,11 @@ class Video extends Model
     	return $this->hasOne(Image::class);
     }
 
+    public function post()
+    {
+        return $this->belongsTo(Post::class);
+    }
+
     public function deleteThumbnail()
     {
     	if($this->thumbnail) {
@@ -35,5 +40,21 @@ class Video extends Model
         }
 
         return $this;
+    }
+
+    public function clearPreview()
+    {
+        $this->post->videos->each(function($item) {
+            $item->is_free = 0;
+            $item->save();
+        });
+
+        return $this;
+    }
+
+    public function newPreview()
+    {
+        $this->is_free = 1;
+        $this->save();
     }
 }

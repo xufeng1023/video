@@ -8,6 +8,7 @@ Route::prefix('admin')->middleware(['auth','admin'])->group(function() {
 	Route::get('/posts/search', 'PostController@search');
 	Route::resource('posts', 'PostController');
 	Route::resource('videos', 'VideoController');
+	Route::put('/videos/{video}/preview', 'VideoController@setPreview');
 	Route::resource('images', 'ImageController');
 });
 

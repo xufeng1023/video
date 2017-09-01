@@ -1,5 +1,5 @@
 <template>
-	<div class="thumbnail">
+	<div class="thumbnail" :class="{'is-thumbnail':active}">
 		<a :href="video.slug | VID" v-if="src">
 			<img :src="src | IMG">
 		</a>
@@ -11,6 +11,9 @@
 			<button type="button" class="btn btn-danger btn-xs" @click="remove(video.slug)">
 				<span class="glyphicon glyphicon-trash"></span>
 			</button>
+			<button type="button" class="btn btn-success btn-xs" @click="preview(video.slug)">
+				<span class="glyphicon glyphicon-thumbs-up"></span>
+			</button>
 		</div>
 	</div>
 </template>
@@ -20,13 +23,17 @@
 		props: ['video'],
 		data() {
 			return {
-				src: ''
+				src: '',
+				active: this.video.is_free
 			}
 		},
 		created() {
 			if(this.video.thumbnail) {
 				this.src = this.video.thumbnail.slug
 			}
+			Bus.$on('previewChanged', function(data) {
+				this.active = data.slug == this.video.slug ? 1 : 0
+			}.bind(this))
 		},
 		filters: {
 			IMG(value) {
@@ -37,6 +44,12 @@
 			}
 		},
 		methods: {
+			preview(slug){
+				axios.post('/admin/videos/'+slug+'/preview', {'_method':'PUT'})
+				.then(() => {
+					Bus.$emit('previewChanged', {'slug':slug})
+				})
+			},
 			remove(slug) {
 				axios.post('/admin/videos/'+slug, {'_method': 'DELETE'})
 				.then(() => {

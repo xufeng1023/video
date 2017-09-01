@@ -108,4 +108,9 @@ class VideoController extends Controller
 
         return ['src' => $video->slug];
     }
+
+    public function setPreview(Video $video)
+    {
+        $video->clearPreview()->newPreview();
+    }
 }
