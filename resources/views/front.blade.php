@@ -26,7 +26,8 @@
             @foreach($posts->chunk(4) as $chunks)
                 <div class="row">
                     @foreach($chunks as $post)
-                        <div class="col">
+                        <div class="col-sm-3">
+                            <img src="{{ asset('/storage/'.$post->images()->first()->slug) }}" width="100%">
                             {{ $post->title }}
                         </div>
                     @endforeach

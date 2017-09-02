@@ -45,15 +45,21 @@
 		},
 		methods: {
 			preview(slug){
-				axios.post('/admin/videos/'+slug+'/preview', {'_method':'PUT'})
+				axios.patch('/admin/videos/'+slug+'/preview')
 				.then(() => {
 					Bus.$emit('previewChanged', {'slug':slug})
 				})
 			},
 			remove(slug) {
-				axios.post('/admin/videos/'+slug, {'_method': 'DELETE'})
-				.then(() => {
-					location.reload()
+				axios.delete('/admin/videos/'+slug)
+				.then((r) => {
+					$(this.$el).fadeOut(300, () => {
+						Bus.$emit('flash', {
+							message: r.data.message,
+							type: 'success'
+						})
+					})
+					//location.reload()
 				})
 			},
 			onChange(e) {

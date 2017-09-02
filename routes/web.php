@@ -8,8 +8,20 @@ Route::prefix('admin')->middleware(['auth','admin'])->group(function() {
 	Route::get('/posts/search', 'PostController@search');
 	Route::resource('posts', 'PostController');
 	Route::resource('videos', 'VideoController');
-	Route::put('/videos/{video}/preview', 'VideoController@setPreview');
+	Route::patch('/videos/{video}/preview', 'VideoController@setPreview');
 	Route::resource('images', 'ImageController');
+	//
+	Route::get('/factory', function() {
+		factory('App\Video', 20)->create()->each(function($video) {
+			factory('App\Image')->create([
+				'post_id' => $video->post->id,
+				'is_thumbnail' => 1
+			]);
+			factory('App\Image')->create(['post_id' => $video->post->id]);
+			factory('App\Image')->create(['video_id' => $video->id]);
+		});
+	});
+	//
 });
 
 Auth::routes();

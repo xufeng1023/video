@@ -160,12 +160,12 @@ class AdminTest extends TestCase
             ->assertDontSee($post2->title);
     }
 
-    function test_admin_can_set_a_video_preview_for_a_post()
+    function test_admin_can_set_a_video_as_a_preview()
     {
         $post = $this->create('Post');
         $video1 = $this->create('Video', ['post_id' => $post->id]);
         $video2 = $this->create('Video', ['is_free' => 1, 'post_id' => $post->id]);
-        $this->login()->put('/admin/videos/'.$video1->slug.'/preview');
+        $this->login()->patch('/admin/videos/'.$video1->slug.'/preview');
         $this->assertDatabaseHas('Videos', ['id' => $video1->id, 'is_free' => 1]);
         $this->assertDatabaseMissing('Videos', ['id' => $video2->id, 'is_free' => 1]);
         $this->deleteUselessFile($video1->link);

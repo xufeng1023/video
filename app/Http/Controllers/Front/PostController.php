@@ -10,7 +10,10 @@ class PostController extends Controller
 {
     public function index()
     {
-    	$posts = Post::latest()->get();
+    	$posts = Post::with(['images' => function($query) {
+    		$query->where('is_thumbnail', 1);
+    	}])->latest()->paginate(20);
+
     	return view('front', compact('posts'));
     }
 }

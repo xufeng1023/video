@@ -32,23 +32,5 @@
 			}
 		},
 		components: { 'title-input': titleInput },
-		// methods: {
-		// 	onSubmit(e) {
-		// 		let data = new FormData(e.target)
-		// 		axios.post('/admin/posts/'+this.post.slug, data)
-		// 			.then((r) => {
-		// 				Bus.$emit('flash', {
-		// 					message: r.data.message,
-		// 					type: 'success'
-		// 				})
-		// 				location.assign('/admin')
-		// 			}, (r) => {
-		// 				Bus.$emit('flash', {
-		// 					message: 'Failed!',
-		// 					type: 'danger'
-		// 				})
-		// 			})
-		// 	}
-		// }
 	}
 </script>

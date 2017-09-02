@@ -96,6 +96,7 @@ class VideoController extends Controller
     public function destroy(Video $video)
     {
         $video->deleteThumbnail()->deleteFiles()->delete();
+        return ['message' => 'Video deleted!'];
     }
 
     public function thumbnail(Request $request, Video $video)
