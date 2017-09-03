@@ -1,6 +1,12 @@
 <?php
 
-Route::get('/', 'Front\PostController@index');
+Route::get('/', function() {
+	return 'front page coming soon...';
+});
+
+Route::get('/movies', 'Front\PostController@index');
+Route::get('/movie/{post}', 'Front\PostController@show');
+
 
 Route::prefix('admin')->middleware(['auth','admin'])->group(function() {
 	Route::get('/', 'PostController@index');
@@ -25,5 +31,3 @@ Route::prefix('admin')->middleware(['auth','admin'])->group(function() {
 });
 
 Auth::routes();
-
-Route::get('/home', 'HomeController@index')->name('home');

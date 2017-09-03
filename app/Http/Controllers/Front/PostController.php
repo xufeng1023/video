@@ -14,6 +14,13 @@ class PostController extends Controller
     		$query->where('is_thumbnail', 1);
     	}])->latest()->paginate(20);
 
-    	return view('front', compact('posts'));
+    	return view('movies', compact('posts'));
+    }
+
+    public function show(Post $post)
+    {
+    	$post->load(['images', 'videos.thumbnail']);
+
+    	return view('movie', compact('post'));
     }
 }

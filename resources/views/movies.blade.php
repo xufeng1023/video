@@ -3,7 +3,7 @@
 @section('content')
 <div class="jumbotron jumbotron-fluid">
     <div class="container-fluid">
-        <h1 class="display-3">Fluid jumbotron</h1>
+        <h1 class="display-3">Fluid jumbotron22</h1>
     </div>
 </div>
 <div class="container-fluid">
@@ -27,8 +27,10 @@
                 <div class="row">
                     @foreach($chunks as $post)
                         <div class="col-sm-3">
-                            <img src="{{ asset('/storage/'.$post->images()->first()->slug) }}" width="100%">
-                            {{ $post->title }}
+                            <a href="/movie/{{ $post->slug }}">
+                                <img src="{{ asset('/storage/'.$post->images->first()->slug) }}" width="100%">
+                                {{ $post->title }}
+                            </a>
                         </div>
                     @endforeach
                 </div>
