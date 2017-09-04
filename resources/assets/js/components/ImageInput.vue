@@ -5,9 +5,9 @@
 	        <input type="file" name="screenshots[]" accept="image/*" multiple @change="onChange">
 	    </div>
 	    <div class="row" v-for="pic in computedImages">
-            <div class="col-sm-3" v-for="slug in pic">
+            <div class="col-xs-3" v-for="slug in pic">
                 <div class="thumbnail" :class="{'is-thumbnail':slug.is_thumbnail}">
-                	<a :href="slug.slug | LINK">
+                	<a :href="slug.slug | LINK" target="_blank">
                 		<img :src="slug.slug | SRC" width="100%">
                 	</a>
                     <button type="button" class="btn btn-success btn-xs" @click="thumb(slug.slug)">
@@ -40,7 +40,7 @@
 		},
 		computed: {
 			computedImages() {
-				return _.chunk(this.images, 3)
+				return _.chunk(this.images, 4)
 			}
 		},
 		methods: {
@@ -67,8 +67,10 @@
 							type: 'success'
 						})
 					}).catch((r) => {
+						e.target.value = ''
+
 						Bus.$emit('flash', {
-							message: r.response.data,
+							message: r.response.statusText,
 							type: 'danger'
 						})
 					})

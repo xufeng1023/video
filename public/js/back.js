@@ -42699,7 +42699,8 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }
   }, [(_vm.src) ? _c('a', {
     attrs: {
-      "href": _vm._f("VID")(_vm.video.slug)
+      "href": _vm._f("VID")(_vm.video.slug),
+      "target": "_blank"
     }
   }, [_c('img', {
     attrs: {
@@ -42915,7 +42916,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 	},
 	computed: {
 		computedImages: function computedImages() {
-			return _.chunk(this.images, 3);
+			return _.chunk(this.images, 4);
 		}
 	},
 	methods: {
@@ -42945,8 +42946,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 					type: 'success'
 				});
 			}).catch(function (r) {
+				e.target.value = '';
+
 				Bus.$emit('flash', {
-					message: r.response.data,
+					message: r.response.statusText,
 					type: 'danger'
 				});
 			});
@@ -43008,7 +43011,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       staticClass: "row"
     }, _vm._l((pic), function(slug) {
       return _c('div', {
-        staticClass: "col-sm-3"
+        staticClass: "col-xs-3"
       }, [_c('div', {
         staticClass: "thumbnail",
         class: {
@@ -43016,7 +43019,8 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
         }
       }, [_c('a', {
         attrs: {
-          "href": _vm._f("LINK")(slug.slug)
+          "href": _vm._f("LINK")(slug.slug),
+          "target": "_blank"
         }
       }, [_c('img', {
         attrs: {

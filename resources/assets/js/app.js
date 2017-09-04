@@ -17,6 +17,9 @@ window.Vue = require('vue');
 
 window.Bus = new Vue();
 
+Vue.component('videoOne', require('./components/FrontVideoOne.vue'));
+Vue.component('videoFrame', require('./components/VideoFrame.vue'));
+
 const app = new Vue({
     el: '#app'
 });

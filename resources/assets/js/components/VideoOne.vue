@@ -1,6 +1,6 @@
 <template>
 	<div class="thumbnail" :class="{'is-thumbnail':active}">
-		<a :href="video.slug | VID" v-if="src">
+		<a :href="video.slug | VID" v-if="src" target="_blank">
 			<img :src="src | IMG">
 		</a>
 		<div class="caption">

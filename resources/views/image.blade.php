@@ -1,0 +1,1 @@
+<img src="{{ asset('/storage/'.$image->slug) }}" alt="{{ $image->post->title }}" width="50%">

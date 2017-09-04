@@ -44,4 +44,14 @@ class ImageTest extends TestCase
     	$this->fileExist($file2->hashName());
     	$this->fileMissing($file1->hashName());
     }
+
+    function test_everyone_can_see_a_single_image()
+    {
+        $post = $this->create('Post');
+        $image = $this->create('Image', ['post_id' => $post->id]);
+        $this->get('/'.$image->slug)
+            ->assertSee($image->slug)
+            ->assertSee($post->title);
+        $this->deleteUselessFile($image->slug);
+    }
 }

@@ -6,7 +6,7 @@ Route::get('/', function() {
 
 Route::get('/movies', 'Front\PostController@index');
 Route::get('/movie/{post}', 'Front\PostController@show');
-
+Route::get('/upload/{image}', 'Front\ImageController@show');
 
 Route::prefix('admin')->middleware(['auth','admin'])->group(function() {
 	Route::get('/', 'PostController@index');
@@ -18,7 +18,7 @@ Route::prefix('admin')->middleware(['auth','admin'])->group(function() {
 	Route::resource('images', 'ImageController');
 	//
 	Route::get('/factory', function() {
-		factory('App\Video', 20)->create()->each(function($video) {
+		factory('App\Video', 10)->create()->each(function($video) {
 			factory('App\Image')->create([
 				'post_id' => $video->post->id,
 				'is_thumbnail' => 1

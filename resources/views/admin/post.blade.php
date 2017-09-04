@@ -12,10 +12,10 @@
                     <image-input post="{{ $post->id }}" image="{{ $post->images }}"></image-input>
                     <hr>
                     <video-input post="{{ $post->id }}" slug="{{ $post->videoSlug() }}"></video-input>
-                    @foreach($post->videos->chunk(3) as $chunk)
+                    @foreach($post->videos->chunk(4) as $chunk)
                         <div class="row">
                             @foreach($chunk as $video)
-                                <div class="col-sm-4">
+                                <div class="col-xs-3">
                                     <video-one :video="{{ $video }}"></video-one>
                                 </div>
                             @endforeach
