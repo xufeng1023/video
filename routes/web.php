@@ -30,4 +30,7 @@ Route::prefix('admin')->middleware(['auth','admin'])->group(function() {
 	//
 });
 
+Route::get('/test/video', 'TestVideoController@index');
+Route::get('/storage/video/test', 'TestVideoController@send');
+
 Auth::routes();
