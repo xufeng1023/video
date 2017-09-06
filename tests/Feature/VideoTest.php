@@ -11,8 +11,8 @@ class VideoTest extends TestCase
 {
     use DatabaseMigrations;
 
-    public function test_uploading_a_video_will_write_more_content_to_that_mp4()
+    public function test_free_videos_can_be_seen_by_guests()
     {
-    	
+
     }
 }

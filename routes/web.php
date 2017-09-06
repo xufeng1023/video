@@ -7,6 +7,7 @@ Route::get('/', function() {
 Route::get('/movies', 'Front\PostController@index');
 Route::get('/movie/{post}', 'Front\PostController@show');
 Route::get('/upload/{image}', 'Front\ImageController@show');
+Route::get('/video/{video}', 'Front\VideoController@stream');
 
 Route::prefix('admin')->middleware(['auth','admin'])->group(function() {
 	Route::get('/', 'PostController@index');
@@ -29,8 +30,5 @@ Route::prefix('admin')->middleware(['auth','admin'])->group(function() {
 	});
 	//
 });
-
-Route::get('/test/video', 'TestVideoController@index');
-Route::get('/storage/video/test', 'TestVideoController@send');
 
 Auth::routes();

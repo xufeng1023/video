@@ -9,7 +9,7 @@
     <div class="row">
         <div class="col-xs-12 col-md-8">
             @if($post->videos->where('is_free', 1)->first())
-                <video-frame init="{{ asset('/storage/'.$post->videos->where('is_free', 1)->first()->link) }}"></video-frame>
+                <video-frame init="{{ $post->videos->where('is_free', 1)->first()->slug }}"></video-frame>
             @endif
             <h1>{{ $post->title }}</h1>
             <p>Videos</p>

@@ -29276,7 +29276,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 	},
 	methods: {
 		play: function play() {
-			Bus.$emit('play', this.video.link);
+			Bus.$emit('play', this.video.slug);
 		}
 	}
 });
@@ -29314,7 +29314,7 @@ var Component = __webpack_require__(1)(
   /* script */
   __webpack_require__(71),
   /* template */
-  __webpack_require__(76),
+  __webpack_require__(72),
   /* styles */
   null,
   /* scopeId */
@@ -29356,45 +29356,50 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
 	props: ['init'],
 	data: function data() {
 		return {
-			src: this.init,
 			video: null
 		};
 	},
 	mounted: function mounted() {
-		this.video = videojs('video-player');
-		this.video.ready(function () {
+		var _this = this;
 
-			this.hotkeys({
-				seekStep: 10
-			});
+		this.video = videojs('video-player');
+
+		this.video.src({
+			type: "video/mp4",
+			src: '/video/' + this.init
 		});
+
+		Bus.$on('play', function (link) {
+			_this.video.pause();
+
+			_this.video.src({
+				type: "video/mp4",
+				src: '/video/' + link
+			});
+
+			_this.video.load();
+			_this.video.play();
+		});
+		// this.video.ready(function() {
+
+		// 	this.hotkeys({
+		// 		seekStep: 10,
+		// 	});
+		// });
 
 		// this.video.on('seeking', () => {
 		// 	console.log();
 		// })
-	},
-	created: function created() {
-		var _this = this;
-
-		Bus.$on('play', function (link) {
-			_this.src = link;
-			_this.video.src(_this.src);
-		});
 	}
 });
 
 /***/ }),
-/* 72 */,
-/* 73 */,
-/* 74 */,
-/* 75 */,
-/* 76 */
+/* 72 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -29406,12 +29411,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       "controls": "",
       "autoplay": ""
     }
-  }, [_c('source', {
-    attrs: {
-      "src": _vm.src,
-      "type": "video/mp4"
-    }
-  })])
+  })
 },staticRenderFns: []}
 module.exports.render._withStripped = true
 if (false) {
