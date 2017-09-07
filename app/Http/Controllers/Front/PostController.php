@@ -21,6 +21,8 @@ class PostController extends Controller
     {
     	$post->load(['images', 'videos.thumbnail']);
 
-    	return view('movie', compact('post'));
+        $preview = $post->getPreview();
+
+    	return view('movie', compact('post', 'preview'));
     }
 }

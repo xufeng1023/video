@@ -14,7 +14,7 @@
 		},
 		methods: {
 			play() {
-				Bus.$emit('play', this.video.slug)
+				Bus.$emit('play', this.video)
 			}
 		}
 	}

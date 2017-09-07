@@ -75,7 +75,7 @@ class PostController extends Controller
         
         $post->update([
             'title' => $request->title,
-            'slug' => $this->generateSlug($request->title)
+            'slug' => sub_slug($request->title)
         ]);
 
         return redirect('/admin/posts/'.$post->slug.'/edit');
@@ -97,10 +97,5 @@ class PostController extends Controller
     public function search(Request $request)
     {
         return Post::where('title', 'LIKE', "%{$request->q}%")->get()->toJson();
-    }
-
-    private function generateSlug($title)
-    {
-        return str_replace(' ', '-', strtolower($title));
     }
 }

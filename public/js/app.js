@@ -29276,7 +29276,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 	},
 	methods: {
 		play: function play() {
-			Bus.$emit('play', this.video.slug);
+			Bus.$emit('play', this.video);
 		}
 	}
 });
@@ -29356,45 +29356,60 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-	props: ['init'],
+	props: ['preview'],
 	data: function data() {
 		return {
 			video: null
 		};
 	},
+
+	filters: {
+		SRC: function SRC(value) {
+			return '/storage/' + value;
+		}
+	},
 	mounted: function mounted() {
 		var _this = this;
 
-		this.video = videojs('video-player');
+		this.video = videojs('video-player', { errorDisplay: false });
 
 		this.video.src({
 			type: "video/mp4",
-			src: '/video/' + this.init
+			src: '/video/' + this.preview.slug
 		});
 
-		Bus.$on('play', function (link) {
+		Bus.$on('play', function (video) {
 			_this.video.pause();
+
+			_this.video.poster('/storage/' + video.thumbnail.slug);
 
 			_this.video.src({
 				type: "video/mp4",
-				src: '/video/' + link
+				src: '/video/' + video.slug
 			});
 
 			_this.video.load();
 			_this.video.play();
 		});
-		// this.video.ready(function() {
 
-		// 	this.hotkeys({
-		// 		seekStep: 10,
-		// 	});
-		// });
+		this.video.ready(function () {
+			this.hotkeys({
+				seekStep: 10
+			});
+		});
 
-		// this.video.on('seeking', () => {
-		// 	console.log();
-		// })
+		this.video.on('error', function (e) {
+			console.log(_this.video.error());
+		});
 	}
 });
 
@@ -29407,6 +29422,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     staticClass: "video-js vjs-big-play-centered",
     attrs: {
       "id": "video-player",
+      "poster": _vm._f("SRC")(this.preview.thumbnail.slug),
       "data-setup": "{}",
       "controls": "",
       "autoplay": ""

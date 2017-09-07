@@ -11,8 +11,12 @@ class VideoController extends Controller
 {
     public function stream(Video $video)
     {
-    	$file = storage_path('app/public/'.$video->link);
+    	if(auth()->user()) {
 
-    	(new VideoStream($file))->start();
+	    	$file = storage_path('app/public/'.$video->link);
+	    	
+	    	(new VideoStream($file))->start();
+
+	    }
     }
 }

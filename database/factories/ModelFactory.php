@@ -15,7 +15,7 @@ $factory->define(App\Post::class, function (Faker\Generator $faker) {
     $title = $faker->sentence;
     return [
         'title' => ucwords($title),
-        'slug' => str_replace(' ', '-', strtolower($title))
+        'slug' => str_slug($title, '-')
     ];
 });
 

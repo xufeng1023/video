@@ -45,4 +45,9 @@ class Post extends Model
     {
         return $this->slug.'-'.($this->videos()->count() + 1);
     }
+
+    public function getPreview()
+    {
+        return $this->videos->where('is_free', 1)->first() ?: $this->videos->first();
+    }
 }

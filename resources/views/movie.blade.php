@@ -8,9 +8,7 @@
 <div class="container">
     <div class="row">
         <div class="col-xs-12 col-md-8">
-            @if($post->videos->where('is_free', 1)->first())
-                <video-frame init="{{ $post->videos->where('is_free', 1)->first()->slug }}"></video-frame>
-            @endif
+            <video-frame :preview="{{ $preview }}"></video-frame>
             <h1>{{ $post->title }}</h1>
             <p>Videos</p>
             <div class="row">
