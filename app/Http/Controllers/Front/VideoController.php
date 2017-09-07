@@ -19,4 +19,13 @@ class VideoController extends Controller
 
 	    }
     }
+
+    public function next(Video $video)
+    {
+    	$slug = preg_replace_callback('/(\d+)$/', function($matches) {
+    		return ++$matches[1];
+    	}, $video->slug);
+
+    	return Video::with('thumbnail')->where('slug', $slug)->first();
+    }
 }

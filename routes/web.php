@@ -8,6 +8,7 @@ Route::get('/movies', 'Front\PostController@index');
 Route::get('/movie/{post}', 'Front\PostController@show');
 Route::get('/upload/{image}', 'Front\ImageController@show');
 Route::get('/video/{video}', 'Front\VideoController@stream');
+Route::get('/video/next/{video}', 'Front\VideoController@next');
 
 Route::prefix('admin')->middleware(['auth','admin'])->group(function() {
 	Route::get('/', 'PostController@index');
