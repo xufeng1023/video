@@ -11,3 +11,9 @@
 	position: relative;
 	margin-bottom: -0.2em;
 }
+#viewImageModal .modal-dialog {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}

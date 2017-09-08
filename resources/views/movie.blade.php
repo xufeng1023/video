@@ -24,15 +24,20 @@
             <div class="row">
                 @foreach($post->images as $image)
                     <div class="col-xs-2 col-sm-4">
-                        <a href="/{{ $image->slug }}" target="_blank">
-                            <img src="{{ asset('/storage/'.$image->slug) }}" width="100%">
-                        </a>
+                        <image-one :image="{{ $image }}"></image-one>
                     </div>
                 @endforeach
             </div>
         </div>
     </div>
 </div>
+<image-modal inline-template>
+    <div class="modal fade" id="viewImageModal" tabindex="-1" role="dialog" aria-labelledby="viewImageModal" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <img :src="src | FILE" width="100%" v-if="src">
+        </div>
+    </div>
+</image-modal>
 @endsection
 
 @section('script')

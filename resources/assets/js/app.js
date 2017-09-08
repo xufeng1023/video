@@ -17,8 +17,12 @@ window.Vue = require('vue');
 
 window.Bus = new Vue();
 
-Vue.component('videoOne', require('./components/FrontVideoOne.vue'));
-Vue.component('videoFrame', require('./components/VideoFrame.vue'));
+Vue.component('videoOne', require('./components/front/VideoOne.vue'));
+Vue.component('videoFrame', require('./components/front/VideoFrame.vue'));
+Vue.component('imageOne', require('./components/front/ImageOne.vue'));
+Vue.component('imageModal', require('./components/front/ImageModal.vue'));
+
+Vue.filter('FILE', (value) => { return '/storage/' + value; });
 
 const app = new Vue({
     el: '#app'
