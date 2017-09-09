@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Post extends Model
 {
-    protected $fillable = ['title', 'slug', 'views'];
+    protected $fillable = ['title', 'slug', 'views', 'plan', 'expired_at'];
 
     public function getRouteKeyName()
     {
@@ -48,6 +48,6 @@ class Post extends Model
 
     public function getPreview()
     {
-        return $this->videos->where('is_free', 1)->first() ?: $this->videos->first();
+        return $this->videos()->orderBy('is_free', 'desc')->first();
     }
 }

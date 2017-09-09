@@ -42,7 +42,7 @@ class PostController extends Controller
 
         $post = Post::create([
             'title' => $request->title,
-            'slug' => $this->generateSlug($request->title)
+            'slug' => str_slug($request->title)
         ]);
 
         return redirect('/admin/posts/'.$post->slug.'/edit');
@@ -75,7 +75,7 @@ class PostController extends Controller
         
         $post->update([
             'title' => $request->title,
-            'slug' => sub_slug($request->title)
+            'slug' => str_slug($request->title)
         ]);
 
         return redirect('/admin/posts/'.$post->slug.'/edit');

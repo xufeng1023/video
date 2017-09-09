@@ -8,7 +8,9 @@
 <div class="container">
     <div class="row">
         <div class="col-xs-12 col-md-8">
-            <video-frame :preview="{{ $preview }}"></video-frame>
+            @if($preview)
+                <video-frame :preview="{{ $preview }}"></video-frame>
+            @endif
             <h1>{{ $post->title }}</h1>
             <p>Videos</p>
             <div class="row">

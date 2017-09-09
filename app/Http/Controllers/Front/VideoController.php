@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Front;
 
 use App\Video;
-use App\VideoStream;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -11,21 +10,17 @@ class VideoController extends Controller
 {
     public function stream(Video $video)
     {
-    	if(auth()->user()) {
-
-	    	$file = storage_path('app/public/'.$video->link);
-	    	
-	    	(new VideoStream($file))->start();
-
+    	if($video->is_free || (auth()->user() && !auth()->user()->expired())) {
+            if(app()->environment() === 'testing') return;
+            $video->play();
 	    }
+
+        return response([], 404);
     }
 
     public function next(Video $video)
     {
-    	$slug = preg_replace_callback('/(\d+)$/', function($matches) {
-    		return ++$matches[1];
-    	}, $video->slug);
-
+    	$slug = $video->nextVideoSlug();
     	return Video::with('thumbnail')->where('slug', $slug)->first();
     }
 }

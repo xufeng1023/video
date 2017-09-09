@@ -57,4 +57,18 @@ class Video extends Model
         $this->is_free = 1;
         $this->save();
     }
+
+    public function nextVideoSlug()
+    {
+        return preg_replace_callback('/(\d+)$/', function($matches) {
+            return ++$matches[1];
+        }, $this->slug);
+    }
+
+    public function play()
+    {
+        $file = storage_path('app/public/'.$this->link);
+            
+        (new VideoStream($file))->start();
+    }
 }

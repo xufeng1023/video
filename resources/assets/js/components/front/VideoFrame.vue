@@ -2,7 +2,6 @@
 	<video 
 		id="video-player" 
 		class="video-js vjs-big-play-centered"
-		
 		data-setup="{}" 
 		controls 
 		autoplay 
@@ -19,16 +18,11 @@
 				video: null
 			}
 		},
-		filters: {
-			SRC(value) {
-				return '/storage/' + value
-			}
-		},
 		watch: {
 			now() {
 				this.video.pause();
 				//this.video.poster('/storage/' + this.now.thumbnail.slug);
-
+				this.video.poster(null);
 				this.video.src({
 					type: "video/mp4",
 					src: '/video/' + this.now.slug
@@ -40,7 +34,12 @@
 		},
 		mounted() {
 			this.now = this.preview;
+			
 			this.video = videojs('video-player', {errorDisplay: false});
+
+			if(this.now.thumbnail) {
+				this.video.poster('/storage/' + this.now.thumbnail.slug);
+			}
 
 			this.video.src({
 				type: "video/mp4",
