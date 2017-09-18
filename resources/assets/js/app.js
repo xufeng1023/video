@@ -9,8 +9,6 @@ let token = document.head.querySelector('meta[name="csrf-token"]');
 
 if (token) {
     window.axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content;
-} else {
-    console.error('CSRF token not found: https://laravel.com/docs/csrf#csrf-x-csrf-token');
 }
 
 window.Vue = require('vue');
@@ -21,6 +19,7 @@ Vue.component('videoOne', require('./components/front/VideoOne.vue'));
 Vue.component('videoFrame', require('./components/front/VideoFrame.vue'));
 Vue.component('imageOne', require('./components/front/ImageOne.vue'));
 Vue.component('imageModal', require('./components/front/ImageModal.vue'));
+Vue.component('pay', require('./components/front/Pay.vue'));
 
 Vue.filter('FILE', (value) => { return '/storage/' + value; });
 

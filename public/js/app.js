@@ -374,7 +374,103 @@ module.exports = {
 
 
 /***/ }),
-/* 1 */,
+/* 1 */
+/***/ (function(module, exports) {
+
+/* globals __VUE_SSR_CONTEXT__ */
+
+// this module is a runtime utility for cleaner component module output and will
+// be included in the final webpack user bundle
+
+module.exports = function normalizeComponent (
+  rawScriptExports,
+  compiledTemplate,
+  injectStyles,
+  scopeId,
+  moduleIdentifier /* server only */
+) {
+  var esModule
+  var scriptExports = rawScriptExports = rawScriptExports || {}
+
+  // ES6 modules interop
+  var type = typeof rawScriptExports.default
+  if (type === 'object' || type === 'function') {
+    esModule = rawScriptExports
+    scriptExports = rawScriptExports.default
+  }
+
+  // Vue.extend constructor export interop
+  var options = typeof scriptExports === 'function'
+    ? scriptExports.options
+    : scriptExports
+
+  // render functions
+  if (compiledTemplate) {
+    options.render = compiledTemplate.render
+    options.staticRenderFns = compiledTemplate.staticRenderFns
+  }
+
+  // scopedId
+  if (scopeId) {
+    options._scopeId = scopeId
+  }
+
+  var hook
+  if (moduleIdentifier) { // server build
+    hook = function (context) {
+      // 2.3 injection
+      context =
+        context || // cached call
+        (this.$vnode && this.$vnode.ssrContext) || // stateful
+        (this.parent && this.parent.$vnode && this.parent.$vnode.ssrContext) // functional
+      // 2.2 with runInNewContext: true
+      if (!context && typeof __VUE_SSR_CONTEXT__ !== 'undefined') {
+        context = __VUE_SSR_CONTEXT__
+      }
+      // inject component styles
+      if (injectStyles) {
+        injectStyles.call(this, context)
+      }
+      // register component module identifier for async chunk inferrence
+      if (context && context._registeredComponents) {
+        context._registeredComponents.add(moduleIdentifier)
+      }
+    }
+    // used by ssr in case component is cached and beforeCreate
+    // never gets called
+    options._ssrRegister = hook
+  } else if (injectStyles) {
+    hook = injectStyles
+  }
+
+  if (hook) {
+    var functional = options.functional
+    var existing = functional
+      ? options.render
+      : options.beforeCreate
+    if (!functional) {
+      // inject component registration as beforeCreate hook
+      options.beforeCreate = existing
+        ? [].concat(existing, hook)
+        : [hook]
+    } else {
+      // register for functioal component in vue file
+      options.render = function renderWithStyleInjection (h, context) {
+        hook.call(context)
+        return existing(h, context)
+      }
+    }
+  }
+
+  return {
+    esModule: esModule,
+    exports: scriptExports,
+    options: options
+  }
+}
+
+
+/***/ }),
 /* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -29103,8 +29199,6 @@ var token = document.head.querySelector('meta[name="csrf-token"]');
 
 if (token) {
     window.axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content;
-} else {
-    console.error('CSRF token not found: https://laravel.com/docs/csrf#csrf-x-csrf-token');
 }
 
 window.Vue = __webpack_require__(31);
@@ -29115,6 +29209,7 @@ Vue.component('videoOne', __webpack_require__(67));
 Vue.component('videoFrame', __webpack_require__(70));
 Vue.component('imageOne', __webpack_require__(73));
 Vue.component('imageModal', __webpack_require__(76));
+Vue.component('pay', __webpack_require__(78));
 
 Vue.filter('FILE', function (value) {
     return '/storage/' + value;
@@ -29129,7 +29224,7 @@ var app = new Vue({
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
-var Component = __webpack_require__(82)(
+var Component = __webpack_require__(1)(
   /* script */
   __webpack_require__(68),
   /* template */
@@ -29220,7 +29315,7 @@ if (false) {
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
-var Component = __webpack_require__(82)(
+var Component = __webpack_require__(1)(
   /* script */
   __webpack_require__(71),
   /* template */
@@ -29360,7 +29455,7 @@ if (false) {
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
-var Component = __webpack_require__(82)(
+var Component = __webpack_require__(1)(
   /* script */
   __webpack_require__(74),
   /* template */
@@ -29451,7 +29546,7 @@ if (false) {
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
-var Component = __webpack_require__(82)(
+var Component = __webpack_require__(1)(
   /* script */
   __webpack_require__(77),
   /* template */
@@ -29508,105 +29603,179 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 });
 
 /***/ }),
-/* 78 */,
-/* 79 */,
-/* 80 */,
-/* 81 */,
-/* 82 */
-/***/ (function(module, exports) {
+/* 78 */
+/***/ (function(module, exports, __webpack_require__) {
 
-/* globals __VUE_SSR_CONTEXT__ */
+var disposed = false
+var Component = __webpack_require__(1)(
+  /* script */
+  __webpack_require__(79),
+  /* template */
+  __webpack_require__(80),
+  /* styles */
+  null,
+  /* scopeId */
+  null,
+  /* moduleIdentifier (server only) */
+  null
+)
+Component.options.__file = "C:\\Users\\xu feng\\Desktop\\video\\resources\\assets\\js\\components\\front\\Pay.vue"
+if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key.substr(0, 2) !== "__"})) {console.error("named exports are not supported in *.vue files.")}
+if (Component.options.functional) {console.error("[vue-loader] Pay.vue: functional components are not supported with templates, they should use render functions.")}
 
-// this module is a runtime utility for cleaner component module output and will
-// be included in the final webpack user bundle
-
-module.exports = function normalizeComponent (
-  rawScriptExports,
-  compiledTemplate,
-  injectStyles,
-  scopeId,
-  moduleIdentifier /* server only */
-) {
-  var esModule
-  var scriptExports = rawScriptExports = rawScriptExports || {}
-
-  // ES6 modules interop
-  var type = typeof rawScriptExports.default
-  if (type === 'object' || type === 'function') {
-    esModule = rawScriptExports
-    scriptExports = rawScriptExports.default
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-149a79a2", Component.options)
+  } else {
+    hotAPI.reload("data-v-149a79a2", Component.options)
   }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
 
-  // Vue.extend constructor export interop
-  var options = typeof scriptExports === 'function'
-    ? scriptExports.options
-    : scriptExports
+module.exports = Component.exports
 
-  // render functions
-  if (compiledTemplate) {
-    options.render = compiledTemplate.render
-    options.staticRenderFns = compiledTemplate.staticRenderFns
-  }
 
-  // scopedId
-  if (scopeId) {
-    options._scopeId = scopeId
-  }
+/***/ }),
+/* 79 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
-  var hook
-  if (moduleIdentifier) { // server build
-    hook = function (context) {
-      // 2.3 injection
-      context =
-        context || // cached call
-        (this.$vnode && this.$vnode.ssrContext) || // stateful
-        (this.parent && this.parent.$vnode && this.parent.$vnode.ssrContext) // functional
-      // 2.2 with runInNewContext: true
-      if (!context && typeof __VUE_SSR_CONTEXT__ !== 'undefined') {
-        context = __VUE_SSR_CONTEXT__
-      }
-      // inject component styles
-      if (injectStyles) {
-        injectStyles.call(this, context)
-      }
-      // register component module identifier for async chunk inferrence
-      if (context && context._registeredComponents) {
-        context._registeredComponents.add(moduleIdentifier)
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+axios.defaults.headers.common['X-CSRF-TOKEN'] = '';
+axios.defaults.headers.common['Authorization'] = 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImp0aSI6IjI5Y2E1NTM2NWViNjczZDIwZDhmZmIyMWE3MzQ1MWM0MDY4NDJiMGY0ZWRlNDc0ZmU0ODhjODVlOTdjZDQzNmI1MDY4NDIzODIzOTg5M2NlIn0.eyJhdWQiOiIyIiwianRpIjoiMjljYTU1MzY1ZWI2NzNkMjBkOGZmYjIxYTczNDUxYzQwNjg0MmIwZjRlZGU0NzRmZTQ4OGM4NWU5N2NkNDM2YjUwNjg0MjM4MjM5ODkzY2UiLCJpYXQiOjE1MDU2ODIyMjEsIm5iZiI6MTUwNTY4MjIyMSwiZXhwIjoxNTM3MjE4MjIxLCJzdWIiOiIxIiwic2NvcGVzIjpbXX0.KhJGAl7Je7fSWzKTeTz2rf9g58-W5YSVoUA2L0PMaQPPJlFD1h7ETj1e73zLZ74bGofYBG46uZT0iyWpiBkPastx96tcS8oKOM2hNirqRHfiqZGBSpAIb0N-JDJCdSTHGKFeROQK3gc_FshuD5t-aeZ7c_wm8oahxlA4hkU3s3gVFkci5IpeAQsB6w5MrcBlXUOzfD-D_r1dTyNDaFkGHYF07LsGOW-Iu7QiJfB5n6W7NY-_z47v1Ca9GN_QOzT5Mf6UAkFshBvgDTNFVDoWRzYxF4VTCtyMGrAIpp5dTUCLAE_rImokjUsybSPgg2TtlwCbwI3OUzp6duZ5xt9f6cX6t5kGxbqSWzP7ophrGBIimQ6s91Tphlo3AYLqx-1FLj0FOe6yea1JgiQPnOciKq0IcHypDrVsvGLDqTIBruvv8kU4BrsCVK9sUL0wkk2YFAeKku1qwUQzH4GD7YPt-dwymC2RJHELaKcq0VqV15pkJ1K4Ex6PKR6iCgfxfuVbTYl960AQs8rGuz-BYLM-b6KDaglS6mFNNt505CjMclCTUdczbBdGUwKqJfZP5xX-u80fHYGU9kpDIVhzq_QjTvX4uHDGPO5T13KSHVl1Zwa23RdLki8NsLpJvDtCPou_ljz_wpFhE8MRpy-02ZEeZteozX-sCbEa78Wp_P_Iu1E';
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+	props: ['user'],
+	methods: {
+		pay: function pay() {
+			axios.post('http://127.0.0.2:8000/api/subscribe/' + this.user.id, { apiToken: this.user.api_token }).then(function (r) {
+				console.log(r.data);
+			});
+		}
+	}
+});
+
+/***/ }),
+/* 80 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', {
+    staticClass: "card border-info mb-3",
+    staticStyle: {
+      "max-width": "20rem"
+    }
+  }, [_c('div', {
+    staticClass: "card-header"
+  }, [_vm._v("Card Info")]), _vm._v(" "), _c('div', {
+    staticClass: "card-body text-info"
+  }, [_c('form', {
+    on: {
+      "submit": function($event) {
+        $event.preventDefault();
+        _vm.pay($event)
       }
     }
-    // used by ssr in case component is cached and beforeCreate
-    // never gets called
-    options._ssrRegister = hook
-  } else if (injectStyles) {
-    hook = injectStyles
-  }
-
-  if (hook) {
-    var functional = options.functional
-    var existing = functional
-      ? options.render
-      : options.beforeCreate
-    if (!functional) {
-      // inject component registration as beforeCreate hook
-      options.beforeCreate = existing
-        ? [].concat(existing, hook)
-        : [hook]
-    } else {
-      // register for functioal component in vue file
-      options.render = function renderWithStyleInjection (h, context) {
-        hook.call(context)
-        return existing(h, context)
-      }
+  }, [_vm._m(0), _vm._v(" "), _vm._m(1), _vm._v(" "), _c('button', {
+    staticClass: "btn btn-primary",
+    attrs: {
+      "type": "submit"
     }
-  }
-
-  return {
-    esModule: esModule,
-    exports: scriptExports,
-    options: options
+  }, [_vm._v("Pay")])])])])
+},staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', {
+    staticClass: "form-group"
+  }, [_c('label', {
+    attrs: {
+      "for": "card-number"
+    }
+  }, [_vm._v("Card Number")]), _vm._v(" "), _c('input', {
+    staticClass: "form-control",
+    attrs: {
+      "type": "text",
+      "id": "card-number",
+      "placeholder": "Card number"
+    }
+  })])
+},function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', {
+    staticClass: "row"
+  }, [_c('div', {
+    staticClass: "col"
+  }, [_c('div', {
+    staticClass: "form-group"
+  }, [_c('label', {
+    attrs: {
+      "for": "expiration"
+    }
+  }, [_vm._v("Expiration")]), _vm._v(" "), _c('input', {
+    staticClass: "form-control",
+    attrs: {
+      "type": "text",
+      "id": "expiration",
+      "placeholder": "Expiration"
+    }
+  })])]), _vm._v(" "), _c('div', {
+    staticClass: "col"
+  }, [_c('div', {
+    staticClass: "form-group"
+  }, [_c('label', {
+    attrs: {
+      "for": "cvc"
+    }
+  }, [_vm._v("CVC")]), _vm._v(" "), _c('input', {
+    staticClass: "form-control",
+    attrs: {
+      "type": "text",
+      "id": "cvc",
+      "placeholder": "CVC"
+    }
+  })])])])
+}]}
+module.exports.render._withStripped = true
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+     require("vue-hot-reload-api").rerender("data-v-149a79a2", module.exports)
   }
 }
-
 
 /***/ })
 /******/ ]);

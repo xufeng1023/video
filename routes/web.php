@@ -1,7 +1,7 @@
 <?php
 
 Route::get('/', function() {
-	return 'front page coming soon...';
+	return view('front');
 });
 
 Route::get('/movies', 'Front\PostController@index');
